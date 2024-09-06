@@ -40,6 +40,7 @@ dependencies:
   build_runner: ^2.4.12
   path_provider: ^2.1.4
   get_it: ^7.7.0
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
