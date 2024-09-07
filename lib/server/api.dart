@@ -34,7 +34,7 @@ class Api {
       (error, stackTrace) {
         return http.Response(
           jsonEncode({
-            'message': 'Failed to get data from $url',
+            'message': 'Internal Server Error from $url',
             'code': HttpStatus.internalServerError,
           }),
           HttpStatus.internalServerError,
