@@ -5,16 +5,17 @@ final ThemeData lightTheme = ThemeData(
     seedColor: Colors.lightBlue,
     primary: Colors.lightBlue,
     surface: Colors.white,
+    brightness: Brightness.light,
   ),
   brightness: Brightness.light,
 );
 
 final darkTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
-    seedColor: lightTheme.colorScheme.secondary,
-    primary: lightTheme.colorScheme.secondary,
-    secondary: lightTheme.colorScheme.primary,
-    surface: Colors.grey[850]
+    seedColor: Colors.yellow[700]!,
+    primary: Colors.yellow[700]!,
+    surface: Colors.grey[850],
+    brightness: Brightness.dark,
   ),
   brightness: Brightness.dark,
 );

@@ -19,6 +19,7 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<MainBloc>(context);
+
     return Scaffold(
       key: scaffoldKey,
       drawer: Drawer(
@@ -32,14 +33,14 @@ class MainPageState extends State<MainPage> {
               },
             ),
             ListTile(
-              title: const Text('HoYoVerse'),
+              title: const Text('HoYoverse'),
               onTap: () {
                 bloc.showHoYoVerse();
                 scaffoldKey.currentState?.closeDrawer();
               },
             ),
             ListTile(
-              title: const Text('Kuro Game'),
+              title: const Text('Kuro Games'),
               onTap: () {
                 bloc.showKuroGame();
                 scaffoldKey.currentState?.closeDrawer();
@@ -60,14 +61,14 @@ class MainPageState extends State<MainPage> {
       ),
       body: SafeArea(
         child: BlocBuilder<MainBloc, MainState>(
-          builder: (c, s) {
-            if (s is HomeState) {
+          builder: (context, state) {
+            if (state is HomeState) {
               return const HomePage();
-            } else if (s is HoYoVerseState) {
+            } else if (state is HoYoverseState) {
               return const HoyoversePage();
-            } else if (s is KuroGameState) {
+            } else if (state is KuroGamesState) {
               return const KurogamePage();
-            } else if (s is SettingsState) {
+            } else if (state is SettingsState) {
               return const SettingPage();
             }
             return const CircularProgressIndicator.adaptive();

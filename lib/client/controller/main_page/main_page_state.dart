@@ -4,8 +4,8 @@ class MainState {}
 
 class HomeState extends MainState {}
 
-class HoYoVerseState extends MainState {}
+class HoYoverseState extends MainState {}
 
-class KuroGameState extends MainState {}
+class KuroGamesState extends MainState {}
 
 class SettingsState extends MainState {}

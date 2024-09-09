@@ -6,7 +6,7 @@ class MainBloc extends Cubit<MainState> {
   MainBloc() : super(HomeState());
 
   void showHome() => emit(HomeState());
-  void showHoYoVerse() => emit(HoYoVerseState());
-  void showKuroGame() => emit(KuroGameState());
+  void showHoYoVerse() => emit(HoYoverseState());
+  void showKuroGame() => emit(KuroGamesState());
   void showSettings() => emit(SettingsState());
 }
