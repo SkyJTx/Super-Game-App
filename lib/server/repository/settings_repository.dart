@@ -7,23 +7,25 @@ enum SettingsRepository {
   genshinImpactAccountId('genshin_impact_account_id', '', String),
   honkaiStarRailAccountId('honkai_star_rail_account_id', '', String),
   zenlessZoneZeroAccountId('zenless_zone_zero_account_id', '', String),
-  honkaiImpact3rdDailyCheckin('honkai_impact_3rd_daily_checkin', 'false', bool),
-  tearsOfThemisDailyCheckin('tears_of_themis_daily_checkin', 'false', bool),
-  genshinImpactDailyCheckin('genshin_impact_daily_checkin', 'false', bool),
-  honkaiStarRailDailyCheckin('honkai_star_rail_daily_checkin', 'false', bool),
-  zenlessZoneZeroDailyCheckin('zenless_zone_zero_daily_checkin', 'false', bool),
-  theme('theme', '0', int),
+  honkaiImpact3rdDailyCheckin('honkai_impact_3rd_daily_checkin', 'false', bool, options: ['true', 'false']),
+  tearsOfThemisDailyCheckin('tears_of_themis_daily_checkin', 'false', bool, options: ['true', 'false']),
+  genshinImpactDailyCheckin('genshin_impact_daily_checkin', 'false', bool, options: ['true', 'false']),
+  honkaiStarRailDailyCheckin('honkai_star_rail_daily_checkin', 'false', bool, options: ['true', 'false']),
+  zenlessZoneZeroDailyCheckin('zenless_zone_zero_daily_checkin', 'false', bool, options: ['true', 'false']),
+  theme('theme', 'system', String, options: ['system', 'light', 'dark']),
   ;
 
   const SettingsRepository(
     this.key,
     this.defaultValue,
-    this.type,
-  );
+    this.type, {
+    this.options,
+  });
 
   final String key;
   final String defaultValue;
   final Type type;
+  final List<String>? options;
 
   static Isar get instance {
     final isarInstance = Isar.getInstance();
@@ -38,7 +40,8 @@ enum SettingsRepository {
   static Future<void> init() async {
     await instance.writeTxn(() async {
       for (final setting in SettingsRepository.values) {
-        final existingSetting = await instance.settings.filter().keyEqualTo(setting.key).findFirst();
+        final existingSetting =
+            await instance.settings.filter().keyEqualTo(setting.key).findFirst();
         if (existingSetting == null) {
           instance.settings.put(Setting(key: setting.key, value: setting.defaultValue));
         }
