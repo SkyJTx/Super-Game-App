@@ -10,11 +10,11 @@ class Api {
 
   Api({http.Client? client}) : client = client ?? http.Client();
 
-  Future<String> get(
+  Future<http.Response> get(
     Map<String, String> headers,
     String url,
-  ) async {
-    final response = await client
+  ) {
+    return client
         .get(
       Uri.parse(url),
       headers: headers,
@@ -41,16 +41,40 @@ class Api {
         );
       },
     );
+  }
 
-    if (response.statusCode == HttpStatus.ok) {
-      return response.body;
-    } else if (ResponseException.contains(response.body)) {
-      throw ResponseException.fromRawJson(response.body);
-    } else {
-      throw ResponseException(
-        'Failed to get data from $url',
-        response.statusCode,
-      );
-    }
+  Future<http.Response> post(
+    Map<String, String> headers,
+    String url,
+    dynamic body,
+  ) {
+    return client
+        .post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonEncode(body),
+    )
+        .timeout(
+      timeoutLimit,
+      onTimeout: () {
+        return http.Response(
+          jsonEncode({
+            'message': 'Request Time Out from $url',
+            'code': HttpStatus.requestTimeout,
+          }),
+          HttpStatus.requestTimeout,
+        );
+      },
+    ).onError(
+      (error, stackTrace) {
+        return http.Response(
+          jsonEncode({
+            'message': 'Internal Server Error from $url',
+            'code': HttpStatus.internalServerError,
+          }),
+          HttpStatus.internalServerError,
+        );
+      },
+    );
   }
 }

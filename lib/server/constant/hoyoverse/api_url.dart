@@ -1,4 +1,4 @@
-enum Info {
+enum InfoUrl {
   honkaiImpact3rd("https://sg-hk4e-api.hoyolab.com/event/sol/info?act_id="),
   tearsOfThemis("https://sg-public-api.hoyolab.com/event/luna/os/info?act_id="),
   genshinImpact("https://sg-public-api.hoyolab.com/event/mani/info?act_id="),
@@ -6,7 +6,7 @@ enum Info {
   zenlessZoneZero("https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/info?act_id="),
   ;
 
-  const Info(
+  const InfoUrl(
     this.baseUrl,
   );
 
@@ -17,7 +17,7 @@ enum Info {
   }
 }
 
-enum Checkin {
+enum CheckinUrl {
   honkaiImpact3rd("https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us"),
   tearsOfThemis("https://sg-public-api.hoyolab.com/event/luna/os/sign"),
   genshinImpact("https://sg-public-api.hoyolab.com/event/mani/sign"),
@@ -25,7 +25,7 @@ enum Checkin {
   zenlessZoneZero("https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign"),
   ;
 
-  const Checkin(
+  const CheckinUrl(
     this.baseUrl,
   );
 
