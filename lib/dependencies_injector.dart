@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,7 +9,7 @@ Future<void> init() async {
   final isar = await Isar.open(
     [SettingSchema],
     directory: dir.path,
-    inspector: true,
+    inspector: kDebugMode,
   );
   final getit = GetIt.instance;
 
