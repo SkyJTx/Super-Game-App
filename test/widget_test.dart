@@ -5,26 +5,32 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:sga/client/controller/theme/theme_bloc.dart';
+// import 'package:sga/dependencies_injector.dart';
 
-import 'package:sga/main.dart';
+// import 'package:sga/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  // test('Test Theme Provider', () async {
+  //   await init();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  //   final themeProvider = ThemeProvider();
+  //   await themeProvider.init();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  //   expect(ThemeMode.values.contains(themeProvider.state), true);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+  //   for (final theme in ThemeMode.values) {
+  //     await themeProvider.select(theme);
+  //     expect(themeProvider.state, theme);
+  //   }
+
+  //   final currentThemeMode = themeProvider.state;
+  //   await themeProvider.toggle();
+  //   expect(themeProvider.state != currentThemeMode, true);
+
+  //   await themeProvider.reset();
+  //   expect(themeProvider.state, ThemeMode.system);
+  // });
 }

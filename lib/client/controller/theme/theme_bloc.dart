@@ -14,7 +14,24 @@ class ThemeProvider extends Cubit<ThemeMode> {
     }
   }
 
-  void select(ThemeMode themeMode) async {
+  Future<void> init() async {
+    final theme = await SettingsRepository.theme.get();
+    switch (theme) {
+      case 'system':
+        emit(ThemeMode.system);
+        break;
+      case 'light':
+        emit(ThemeMode.light);
+        break;
+      case 'dark':
+        emit(ThemeMode.dark);
+        break;
+      default:
+        break;
+    }
+  }
+
+  Future<void> select(ThemeMode themeMode) async {
     emit(themeMode);
     switch (themeMode) {
       case ThemeMode.system:
@@ -31,7 +48,7 @@ class ThemeProvider extends Cubit<ThemeMode> {
     }
   }
 
-  void toggle() async {
+  Future<void> toggle() async {
     if (state == ThemeMode.system) {
       final systemBrightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
       if (systemBrightness == Brightness.light) {
@@ -52,7 +69,7 @@ class ThemeProvider extends Cubit<ThemeMode> {
     }
   }
 
-  void reset() async {
+  Future<void> reset() async {
     emit(ThemeMode.system);
     await SettingsRepository.theme.set('system');
   }

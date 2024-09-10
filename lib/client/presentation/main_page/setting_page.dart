@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:sga/client/controller/theme/theme_bloc.dart';
+import 'package:sga/server/repository/settings_repository.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -9,14 +12,26 @@ class SettingPage extends StatefulWidget {
 }
 
 class SettingPageState extends State<SettingPage> {
-  final TextEditingController themeController = TextEditingController();
+  final hoyoverseLTUIDController = TextEditingController();
+  final hoyoverseLTokenController = TextEditingController();
+  final hoyoverseDeviceIDController = TextEditingController();
+  final themeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    final themeMode = ThemeProvider.of(context)?.state;
-    themeController.text = formatThemeMode(themeMode);
+    themeController.text = formatThemeMode(ThemeProvider.of(context)?.state);
+
+    SettingsRepository.hoyoverseLTUID.get().then((value) {
+      hoyoverseLTUIDController.text = value;
+    });
+    SettingsRepository.hoyoverseLToken.get().then((value) {
+      hoyoverseLTokenController.text = value;
+    });
+    SettingsRepository.hoyoverseDeviceId.get().then((value) {
+      hoyoverseDeviceIDController.text = value;
+    });
   }
 
   String formatThemeMode(ThemeMode? themeMode) {
@@ -36,6 +51,81 @@ class SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
+        ListTile(
+          leading: const Icon(Icons.perm_identity),
+          title: const Text('HoYoverse\'s LTUID'),
+          subtitle: const Text('Your LTUID for HoYoLab.'),
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 145),
+            child: TextField(
+              controller: hoyoverseLTUIDController,
+              decoration: const InputDecoration(
+                hintText: 'Enter your LTUID',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+              ),
+              onEditingComplete: () async {
+                final ltuid = hoyoverseLTUIDController.text;
+                await SettingsRepository.hoyoverseLTUID.set(ltuid);
+              },
+              onTapOutside: (event) async {
+                final ltuid = hoyoverseLTUIDController.text;
+                await SettingsRepository.hoyoverseLTUID.set(ltuid);
+              },
+            ),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.vpn_key),
+          title: const Text('HoYoverse\'s LToken'),
+          subtitle: const Text('Your LToken for HoYoLab.'),
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 145),
+            child: TextField(
+              controller: hoyoverseLTokenController,
+              decoration: const InputDecoration(
+                hintText: 'Enter your LToken',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+              ),
+              onEditingComplete: () async {
+                final ltuid = hoyoverseLTokenController.text;
+                await SettingsRepository.hoyoverseLToken.set(ltuid);
+              },
+              onTapOutside: (event) async {
+                final ltuid = hoyoverseLTokenController.text;
+                await SettingsRepository.hoyoverseLToken.set(ltuid);
+              },
+            ),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.phone_android),
+          title: const Text('HoYoverse\'s Device ID'),
+          subtitle: const Text('Your Device ID for HoYoLab.'),
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 145),
+            child: TextField(
+              controller: hoyoverseDeviceIDController,
+              decoration: const InputDecoration(
+                hintText: 'Enter your Device ID',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+              ),
+              onEditingComplete: () async {
+                final ltuid = hoyoverseDeviceIDController.text;
+                await SettingsRepository.hoyoverseDeviceId.set(ltuid);
+              },
+              onTapOutside: (event) async {
+                final ltuid = hoyoverseDeviceIDController.text;
+                await SettingsRepository.hoyoverseDeviceId.set(ltuid);
+              },
+            ),
+          ),
+        ),
         ListTile(
           leading: const Icon(Icons.brightness_4),
           title: const Text('Theme Mode'),

@@ -2,16 +2,14 @@ import 'package:isar/isar.dart';
 import 'package:sga/server/data_model/setting.dart';
 
 enum SettingsRepository {
-  honkaiImpact3rdAccountId('honkai_impact_3rd_account_id', '', String),
-  tearsOfThemisAccountId('tears_of_themis_account_id', '', String),
-  genshinImpactAccountId('genshin_impact_account_id', '', String),
-  honkaiStarRailAccountId('honkai_star_rail_account_id', '', String),
-  zenlessZoneZeroAccountId('zenless_zone_zero_account_id', '', String),
-  honkaiImpact3rdDailyCheckin('honkai_impact_3rd_daily_checkin', 'false', bool, options: ['true', 'false']),
-  tearsOfThemisDailyCheckin('tears_of_themis_daily_checkin', 'false', bool, options: ['true', 'false']),
-  genshinImpactDailyCheckin('genshin_impact_daily_checkin', 'false', bool, options: ['true', 'false']),
-  honkaiStarRailDailyCheckin('honkai_star_rail_daily_checkin', 'false', bool, options: ['true', 'false']),
-  zenlessZoneZeroDailyCheckin('zenless_zone_zero_daily_checkin', 'false', bool, options: ['true', 'false']),
+  hoyoverseLTUID('hoyoverse_ltuid', '', String),
+  hoyoverseLToken('hoyoverse_ltoken', '', String),
+  hoyoverseDeviceId('hoyoverse_device_id', '', String),
+  honkaiImpact3rdDailyCheckin('honkai_impact_3rd_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
+  tearsOfThemisDailyCheckin('tears_of_themis_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
+  genshinImpactDailyCheckin('genshin_impact_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
+  honkaiStarRailDailyCheckin('honkai_star_rail_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
+  zenlessZoneZeroDailyCheckin('zenless_zone_zero_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
   theme('theme', 'system', String, options: ['system', 'light', 'dark']),
   ;
 
