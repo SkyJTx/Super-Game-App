@@ -11,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
   runApp(BlocProvider(
-    create: (context) => ThemeProvider(),
+    create: (context) => ThemeProvider()..init(),
     child: const MyApp(),
   ));
 }
@@ -28,26 +28,28 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return ResponsiveSizer(builder: (context, orientation, screenType) {
-      return BlocBuilder<ThemeProvider, ThemeMode>(
-        builder: (context, state) {
-          return MaterialApp(
-            title: 'Flutter Demo',
-            home: SelectionArea(
-              child: BlocProvider(
-                create: (context) => MainBloc(),
-                child: const MainPage(),
+    return ResponsiveSizer(
+      builder: (context, orientation, screenType) {
+        return BlocBuilder<ThemeProvider, ThemeMode>(
+          builder: (context, state) {
+            return MaterialApp(
+              title: 'Flutter Demo',
+              home: SelectionArea(
+                child: BlocProvider(
+                  create: (context) => MainBloc(),
+                  child: const MainPage(),
+                ),
               ),
-            ),
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: state,
-            debugShowCheckedModeBanner: false,
-            themeAnimationCurve: Curves.easeInOutCubicEmphasized,
-            themeAnimationDuration: const Duration(milliseconds: 1000),
-          );
-        },
-      );
-    });
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: state,
+              debugShowCheckedModeBanner: false,
+              themeAnimationCurve: Curves.easeInOutCubicEmphasized,
+              themeAnimationDuration: const Duration(milliseconds: 1000),
+            );
+          },
+        );
+      },
+    );
   }
 }
