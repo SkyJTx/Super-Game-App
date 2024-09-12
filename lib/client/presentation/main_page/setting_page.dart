@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sga/client/controller/theme/theme_bloc.dart';
 import 'package:sga/server/repository/settings_repository.dart';
+import 'package:sizer/sizer.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -47,104 +49,162 @@ class SettingPageState extends State<SettingPage> {
     }
   }
 
+  Widget customTextField({
+    required Icon leading,
+    required String title,
+    required String subtitle,
+    required String hintText,
+    required TextEditingController controller,
+    required SettingsRepository setting,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          leading,
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleSmall),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+          Flexible(child: Container()),
+          SizedBox(
+            width: min(300, 30.w),
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: hintText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+              ),
+              onEditingComplete: () async {
+                final res = controller.text;
+                await setting.set(res);
+              },
+              onTapOutside: (event) async {
+                final res = controller.text;
+                await setting.set(res);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget customListTile({
+    required Icon leading,
+    required String title,
+    required String subtitle,
+    required Widget trailing,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          leading,
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleSmall),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+          Flexible(child: Container()),
+          trailing,
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        ListTile(
-          leading: const Icon(Icons.perm_identity),
-          title: const Text('HoYoverse\'s LTUID'),
-          subtitle: const Text('Your LTUID for HoYoLab.'),
-          trailing: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 145),
-            child: TextField(
-              controller: hoyoverseLTUIDController,
-              decoration: const InputDecoration(
-                hintText: 'Enter your LTUID',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+        Container(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'General',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const Divider(),
+              customListTile(
+                leading: const Icon(Icons.brightness_4),
+                title: 'Theme Mode',
+                subtitle: 'Current theme mode for this app.',
+                trailing: DropdownMenu<ThemeMode>(
+                  controller: themeController,
+                  dropdownMenuEntries: ThemeMode.values
+                      .map(
+                        (e) => DropdownMenuEntry(
+                          value: e,
+                          label: formatThemeMode(e),
+                        ),
+                      )
+                      .toList(),
+                  onSelected: (value) {
+                    if (value != null) {
+                      ThemeProvider.of(context)?.select(value);
+                    }
+                  },
                 ),
               ),
-              onEditingComplete: () async {
-                final ltuid = hoyoverseLTUIDController.text;
-                await SettingsRepository.hoyoverseLTUID.set(ltuid);
-              },
-              onTapOutside: (event) async {
-                final ltuid = hoyoverseLTUIDController.text;
-                await SettingsRepository.hoyoverseLTUID.set(ltuid);
-              },
-            ),
+            ],
           ),
         ),
-        ListTile(
-          leading: const Icon(Icons.vpn_key),
-          title: const Text('HoYoverse\'s LToken'),
-          subtitle: const Text('Your LToken for HoYoLab.'),
-          trailing: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 145),
-            child: TextField(
-              controller: hoyoverseLTokenController,
-              decoration: const InputDecoration(
-                hintText: 'Enter your LToken',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'HoYoverse',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              onEditingComplete: () async {
-                final ltuid = hoyoverseLTokenController.text;
-                await SettingsRepository.hoyoverseLToken.set(ltuid);
-              },
-              onTapOutside: (event) async {
-                final ltuid = hoyoverseLTokenController.text;
-                await SettingsRepository.hoyoverseLToken.set(ltuid);
-              },
-            ),
-          ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.phone_android),
-          title: const Text('HoYoverse\'s Device ID'),
-          subtitle: const Text('Your Device ID for HoYoLab.'),
-          trailing: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 145),
-            child: TextField(
-              controller: hoyoverseDeviceIDController,
-              decoration: const InputDecoration(
-                hintText: 'Enter your Device ID',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-              ),
-              onEditingComplete: () async {
-                final ltuid = hoyoverseDeviceIDController.text;
-                await SettingsRepository.hoyoverseDeviceId.set(ltuid);
-              },
-              onTapOutside: (event) async {
-                final ltuid = hoyoverseDeviceIDController.text;
-                await SettingsRepository.hoyoverseDeviceId.set(ltuid);
-              },
-            ),
-          ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.brightness_4),
-          title: const Text('Theme Mode'),
-          subtitle: const Text('Current theme mode for this app.'),
-          trailing: DropdownMenu<ThemeMode>(
-            controller: themeController,
-            dropdownMenuEntries: ThemeMode.values
-                .map(
-                  (e) => DropdownMenuEntry(
-                    value: e,
-                    label: formatThemeMode(e),
+              const Divider(),
+              Column(
+                children: [
+                  customTextField(
+                    leading: const Icon(Icons.perm_identity),
+                    title: 'HoYoverse\'s LTUID',
+                    subtitle: 'Your LTUID from HoYoLab.',
+                    hintText: 'Enter your LTUID',
+                    controller: hoyoverseLTUIDController,
+                    setting: SettingsRepository.hoyoverseLTUID,
                   ),
-                )
-                .toList(),
-            onSelected: (value) {
-              if (value != null) {
-                ThemeProvider.of(context)?.select(value);
-              }
-            },
+                  customTextField(
+                    leading: const Icon(Icons.vpn_key),
+                    title: 'HoYoverse\'s LToken',
+                    subtitle: 'Your LToken from HoYoLab.',
+                    hintText: 'Enter your LToken',
+                    controller: hoyoverseLTokenController,
+                    setting: SettingsRepository.hoyoverseLToken,
+                  ),
+                  customTextField(
+                    leading: const Icon(Icons.phone_android),
+                    title: 'HoYoverse\'s Device ID',
+                    subtitle: 'Your Device ID from HoYoLab.',
+                    hintText: 'Enter your Device ID',
+                    controller: hoyoverseDeviceIDController,
+                    setting: SettingsRepository.hoyoverseDeviceId,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ],

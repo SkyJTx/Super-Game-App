@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sga/client/controller/main_page/main_page_bloc.dart';
 import 'package:sga/client/presentation/main_page/home_page.dart';
-import 'package:sga/client/presentation/main_page/hoyoverse_page.dart';
+import 'package:sga/client/presentation/main_page/hoyoverse_page/hoyoverse_page.dart';
 import 'package:sga/client/presentation/main_page/kurogame._page.dart';
 import 'package:sga/client/presentation/main_page/setting_page.dart';
 

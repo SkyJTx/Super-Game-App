@@ -1,7 +1,7 @@
 enum InfoUrl {
-  honkaiImpact3rd("https://sg-hk4e-api.hoyolab.com/event/sol/info?act_id="),
+  honkaiImpact3rd("https://sg-public-api.hoyolab.com/event/mani/info?act_id="),
   tearsOfThemis("https://sg-public-api.hoyolab.com/event/luna/os/info?act_id="),
-  genshinImpact("https://sg-public-api.hoyolab.com/event/mani/info?act_id="),
+  genshinImpact("https://sg-hk4e-api.hoyolab.com/event/sol/info?act_id="),
   honkaiStarRail("https://sg-public-api.hoyolab.com/event/luna/os/info?act_id="),
   zenlessZoneZero("https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/info?act_id="),
   ;
@@ -18,9 +18,9 @@ enum InfoUrl {
 }
 
 enum CheckinUrl {
-  honkaiImpact3rd("https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us"),
+  honkaiImpact3rd("https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us"),
   tearsOfThemis("https://sg-public-api.hoyolab.com/event/luna/os/sign"),
-  genshinImpact("https://sg-public-api.hoyolab.com/event/mani/sign"),
+  genshinImpact("https://sg-hk4e-api.hoyolab.com/event/sol/sign"),
   honkaiStarRail("https://sg-public-api.hoyolab.com/event/luna/os/sign"),
   zenlessZoneZero("https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign"),
   ;

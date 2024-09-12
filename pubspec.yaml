@@ -96,3 +96,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  assets:
+    - assets/
+    - assets/images/
+    - assets/images/hoyoverse/
+    - assets/images/hoyoverse/honkai_impact_3rd/
+    - assets/images/hoyoverse/tears_of_themis/
+    - assets/images/hoyoverse/genshin_impact/
+    - assets/images/hoyoverse/honkai_star_rail/
+    - assets/images/hoyoverse/zenless_zone_zero/
+    - assets/icons/

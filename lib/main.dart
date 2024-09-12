@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
 import 'package:sga/client/constant/theme.dart';
+import 'package:sga/client/repository/global_repo.dart';
 import 'package:sga/client/controller/main_page/main_page_bloc.dart';
 import 'package:sga/client/controller/theme/theme_bloc.dart';
 import 'package:sga/client/presentation/main_page.dart';
 import 'package:sga/dependencies_injector.dart';
+import 'package:sga/server/repository/hoyoverse_repository.dart';
 import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
-  runApp(BlocProvider(
-    create: (context) => ThemeProvider()..init(),
-    child: const MyApp(),
+  final client = Client();
+  runApp(MultiRepositoryProvider(
+    providers: [
+      RepositoryProvider(create: (context) => HoYoverseRepository(client: client)),
+      RepositoryProvider(create: (context) => GlobalRepository()),
+    ],
+    child: BlocProvider(
+      create: (context) => ThemeProvider()..init(),
+      child: const MyApp(),
+    ),
   ));
 }
 
@@ -28,11 +38,14 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    final globalRepo = GlobalRepository.of(context);
     return ResponsiveSizer(
       builder: (context, orientation, screenType) {
         return BlocBuilder<ThemeProvider, ThemeMode>(
           builder: (context, state) {
             return MaterialApp(
+              navigatorKey: globalRepo.navigatorKey,
+              scaffoldMessengerKey: globalRepo.scaffoldMessengerKey,
               title: 'Flutter Demo',
               home: SelectionArea(
                 child: BlocProvider(

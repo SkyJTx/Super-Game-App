@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:sga/server/component/exception.dart';
 import 'package:sga/server/constant/constant.dart';
 
 class Api {

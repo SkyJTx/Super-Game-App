@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
-import 'package:isar/isar.dart';
 import 'package:sga/server/api.dart';
 import 'package:sga/server/component/exception.dart';
 import 'package:sga/server/constant/hoyoverse/request_event.dart';
@@ -14,20 +16,26 @@ class HoYoverseRepository {
 
   HoYoverseRepository({
     Client? client,
-    Isar? isar,
   }) {
     _api = Api(client: client);
+  }
+
+  static HoYoverseRepository of(BuildContext context) {
+    return RepositoryProvider.of<HoYoverseRepository>(context);
   }
 
   Future<ClaimResponse> claimDailyReward(RequestEvent event) async {
     final ltuid = await SettingsRepository.hoyoverseLTUID.get();
     final ltoken = await SettingsRepository.hoyoverseLToken.get();
     final deviceId = await SettingsRepository.hoyoverseDeviceId.get();
+    if (ltuid.isEmpty || ltoken.isEmpty || deviceId.isEmpty) {
+      throw Exception('HoYoverse credentials are not set');
+    }
     final header = {
       'accept': 'application/json, text/plain, */*',
       'accept-language': 'en-US',
       'content-type': 'application/json;charset=UTF-8',
-      'cookie': 'ltuid=$ltuid; ltoken=$ltoken',
+      'cookie': 'ltuid_v2=$ltuid; ltoken_v2=$ltoken',
       'origin': 'https://act.hoyolab.com',
       'referer': 'https://act.hoyolab.com/',
       'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
@@ -41,7 +49,7 @@ class HoYoverseRepository {
       'x-rpc-app_version': '',
       'x-rpc-device_id': deviceId,
       'x-rpc-device_name': '',
-      'x-rpc-platform': 'pc',
+      'x-rpc-platform': '4',
     };
     final body = {'act_id': event.actIdValue};
 
@@ -52,6 +60,7 @@ class HoYoverseRepository {
     );
 
     if (res.statusCode == HttpStatus.ok) {
+      log('${event.actId.toString()} ${res.body}');
       final data = ClaimResponse.fromJson(res.body);
       if (data.retcode != 0) {
         throw ResponseException(
@@ -59,9 +68,9 @@ class HoYoverseRepository {
           res.statusCode,
         );
       }
-      if (data.data.gtResult.isRisk) {
+      if (data.data != null && data.data!.isRisk) {
         throw ResponseException(
-          'Captcha Required: ${event.actIdValue}, ${data.data.gtResult.challenge}',
+          'Captcha Required: ${event.actIdValue}, ${data.data!.challenge}',
           res.statusCode,
         );
       }
@@ -81,7 +90,7 @@ class HoYoverseRepository {
       'accept': 'application/json, text/plain, */*',
       'accept-language': 'en-US',
       'content-type': 'application/json;charset=UTF-8',
-      'cookie': 'ltuid=$ltuid; ltoken=$ltoken',
+      'cookie': 'ltuid_v2=$ltuid; ltoken_v2=$ltoken',
       'origin': 'https://act.hoyolab.com',
       'referer': 'https://act.hoyolab.com/',
       'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
@@ -100,6 +109,7 @@ class HoYoverseRepository {
     );
 
     if (res.statusCode == HttpStatus.ok) {
+      log('${event.actId.toString()} ${res.body}');
       final data = CheckResponse.fromJson(res.body);
       if (data.retcode != 0) {
         throw ResponseException(

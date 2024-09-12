@@ -4,7 +4,7 @@ import 'dart:convert';
 class CheckResponse {
   int retcode;
   String message;
-  CheckData data;
+  CheckData? data;
 
   CheckResponse({
     required this.retcode,
@@ -28,7 +28,7 @@ class CheckResponse {
     return <String, dynamic>{
       'retcode': retcode,
       'message': message,
-      'data': data.toMap(),
+      'data': data?.toMap(),
     };
   }
 
@@ -36,13 +36,14 @@ class CheckResponse {
     return CheckResponse(
       retcode: map['retcode'] as int,
       message: map['message'] as String,
-      data: CheckData.fromMap(map['data'] as Map<String,dynamic>),
+      data: map['data'] != null ? CheckData.fromMap(map['data'] as Map<String, dynamic>) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CheckResponse.fromJson(String source) => CheckResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CheckResponse.fromJson(String source) =>
+      CheckResponse.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'CheckResponse(retcode: $retcode, message: $message, data: $data)';
@@ -50,11 +51,8 @@ class CheckResponse {
   @override
   bool operator ==(covariant CheckResponse other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.retcode == retcode &&
-      other.message == message &&
-      other.data == data;
+
+    return other.retcode == retcode && other.message == message && other.data == data;
   }
 
   @override
@@ -65,19 +63,25 @@ class CheckData {
   int totalSignDay;
   String today;
   bool isSign;
-  bool firstBind;
+  bool? firstBind;
   bool isSub;
   String region;
-  bool monthLastDay;
+  int? signCntMissed;
+  int? shortSignDay;
+  bool? sendFirst;
+  bool? monthLastDay;
 
   CheckData({
     required this.totalSignDay,
     required this.today,
     required this.isSign,
-    required this.firstBind,
+    this.firstBind,
     required this.isSub,
     required this.region,
-    required this.monthLastDay,
+    required this.signCntMissed,
+    required this.shortSignDay,
+    required this.sendFirst,
+    this.monthLastDay,
   });
 
   CheckData copyWith({
@@ -87,6 +91,9 @@ class CheckData {
     bool? firstBind,
     bool? isSub,
     String? region,
+    int? signCntMissed,
+    int? shortSignDay,
+    bool? sendFirst,
     bool? monthLastDay,
   }) {
     return CheckData(
@@ -96,6 +103,9 @@ class CheckData {
       firstBind: firstBind ?? this.firstBind,
       isSub: isSub ?? this.isSub,
       region: region ?? this.region,
+      signCntMissed: signCntMissed ?? this.signCntMissed,
+      shortSignDay: shortSignDay ?? this.shortSignDay,
+      sendFirst: sendFirst ?? this.sendFirst,
       monthLastDay: monthLastDay ?? this.monthLastDay,
     );
   }
@@ -108,6 +118,9 @@ class CheckData {
       'first_bind': firstBind,
       'is_sub': isSub,
       'region': region,
+      'sign_cnt_missed': signCntMissed,
+      'short_sign_day': shortSignDay,
+      'send_first': sendFirst,
       'month_last_day': monthLastDay,
     };
   }
@@ -117,44 +130,53 @@ class CheckData {
       totalSignDay: map['total_sign_day'] as int,
       today: map['today'] as String,
       isSign: map['is_sign'] as bool,
-      firstBind: map['first_bind'] as bool,
+      firstBind: map['first_bind'] != null ? map['first_bind'] as bool : null,
       isSub: map['is_sub'] as bool,
       region: map['region'] as String,
-      monthLastDay: map['month_last_day'] as bool,
+      signCntMissed: map['sign_cnt_missed'] != null ? map['sign_cnt_missed'] as int : null,
+      shortSignDay: map['short_sign_day'] != null ? map['short_sign_day'] as int : null,
+      sendFirst: map['send_first'] != null ? map['send_first'] as bool : null,
+      monthLastDay: map['month_last_day'] != null ? map['month_last_day'] as bool : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CheckData.fromJson(String source) => CheckData.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CheckData.fromJson(String source) =>
+      CheckData.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'CheckData(totalSignDay: $totalSignDay, today: $today, isSign: $isSign, firstBind: $firstBind, isSub: $isSub, region: $region, monthLastDay: $monthLastDay)';
+    return 'CheckData(totalSignDay: $totalSignDay, today: $today, isSign: $isSign, firstBind: $firstBind, isSub: $isSub, region: $region, signCntMissed: $signCntMissed, shortSignDay: $shortSignDay, sendFirst: $sendFirst, monthLastDay: $monthLastDay)';
   }
 
   @override
   bool operator ==(covariant CheckData other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.totalSignDay == totalSignDay &&
-      other.today == today &&
-      other.isSign == isSign &&
-      other.firstBind == firstBind &&
-      other.isSub == isSub &&
-      other.region == region &&
-      other.monthLastDay == monthLastDay;
+
+    return other.totalSignDay == totalSignDay &&
+        other.today == today &&
+        other.isSign == isSign &&
+        other.firstBind == firstBind &&
+        other.isSub == isSub &&
+        other.region == region &&
+        other.signCntMissed == signCntMissed &&
+        other.shortSignDay == shortSignDay &&
+        other.sendFirst == sendFirst &&
+        other.monthLastDay == monthLastDay;
   }
 
   @override
   int get hashCode {
     return totalSignDay.hashCode ^
-      today.hashCode ^
-      isSign.hashCode ^
-      firstBind.hashCode ^
-      isSub.hashCode ^
-      region.hashCode ^
-      monthLastDay.hashCode;
+        today.hashCode ^
+        isSign.hashCode ^
+        firstBind.hashCode ^
+        isSub.hashCode ^
+        region.hashCode ^
+        signCntMissed.hashCode ^
+        shortSignDay.hashCode ^
+        sendFirst.hashCode ^
+        monthLastDay.hashCode;
   }
 }
