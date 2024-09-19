@@ -66,8 +66,8 @@ class HoYoverseRepository {
           final body = HonkaiImpact3rdClaimResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${game.dailyLoginActIdValue}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           }
           return body;
@@ -75,8 +75,8 @@ class HoYoverseRepository {
           final body = GenshinImpactClaimResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${body.retcode}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           } else if (body.data!.gtResult.isRisk) {
             throw ResponseException(
@@ -89,13 +89,13 @@ class HoYoverseRepository {
           final body = TearsOfThemisClaimResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${body.retcode}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           } else if (body.data!.isRisk) {
             throw ResponseException(
-              'Error: ${body.retcode}, Captcha is Required',
-              res.statusCode,
+              'Captcha is Required',
+              body.data!.riskCode,
             );
           }
           return body;
@@ -103,13 +103,13 @@ class HoYoverseRepository {
           final body = HonkaiStarRailClaimResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${body.retcode}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           } else if (body.data!.isRisk) {
             throw ResponseException(
-              'Error: ${body.retcode}, Captcha is Required',
-              res.statusCode,
+              'Captcha is Required',
+              body.data!.riskCode,
             );
           }
           return body;
@@ -117,13 +117,13 @@ class HoYoverseRepository {
           final body = ZenlessZoneZeroClaimResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${body.retcode}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           } else if (body.data!.isRisk) {
             throw ResponseException(
-              'Error: ${body.retcode}, Captcha is Required',
-              res.statusCode,
+              'Captcha is Required',
+              body.data!.riskCode,
             );
           }
           return body;
@@ -173,8 +173,8 @@ class HoYoverseRepository {
           final body = HonkaiImpact3rdCheckResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           }
           return body;
@@ -182,8 +182,8 @@ class HoYoverseRepository {
           final body = GenshinImpactCheckResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           }
           return body;
@@ -191,8 +191,8 @@ class HoYoverseRepository {
           final body = TearsOfThemisCheckResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           }
           return body;
@@ -200,8 +200,8 @@ class HoYoverseRepository {
           final body = HonkaiStarRailCheckResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           }
           return body;
@@ -209,8 +209,8 @@ class HoYoverseRepository {
           final body = ZenlessZoneZeroCheckResponse.fromJson(res.body);
           if (body.retcode != 0 || body.data == null) {
             throw ResponseException(
-              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
-              res.statusCode,
+              body.message,
+              body.retcode,
             );
           }
           return body;

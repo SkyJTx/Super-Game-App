@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class KurogamePage extends StatefulWidget {
   const KurogamePage({super.key});
 
+  static const routeName = '/kurogame';
+
   @override
   State<KurogamePage> createState() => KurogamePageState();
 }

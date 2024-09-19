@@ -6,6 +6,8 @@ import 'package:sizer/sizer.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  static const routeName = '/';
+
   @override
   State<HomePage> createState() => HomePageState();
 }

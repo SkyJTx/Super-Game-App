@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,6 +7,8 @@ import 'package:sizer/sizer.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
+
+  static const routeName = '/settings';
 
   @override
   State<SettingPage> createState() => SettingPageState();
@@ -114,21 +115,28 @@ class SettingPageState extends State<SettingPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              leading,
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme.of(context).textTheme.titleSmall),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ],
+          Flexible(
+            child: Row(
+              children: [
+                leading,
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleSmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           trailing,
         ],

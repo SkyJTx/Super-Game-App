@@ -32,6 +32,9 @@ class HoyoverseGameCardState extends State<HoyoverseGameCard> {
       setState(() {
         claimStatus = value;
       });
+    }).onError((error, stackTrace) {
+      if (!context.mounted) return;
+      GlobalRepository.of(context).showErrorSnackBar(context, message: error.toString());
     });
   }
 

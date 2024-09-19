@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sga/client/presentation/main_page/hoyoverse_page/hoyoverse_game_card.dart';
+import 'package:sga/client/component/hoyoverse_game_card.dart';
 import 'package:sga/server/constant/hoyoverse/details.dart';
 import 'package:sga/server/data_model/hoyoverse/daily_login/check/check_response.dart';
 import 'package:sga/server/data_model/hoyoverse/daily_login/claim/claim_response.dart';
@@ -7,6 +7,8 @@ import 'package:sga/server/repository/hoyoverse_repository.dart';
 
 class HoyoversePage extends StatefulWidget {
   const HoyoversePage({super.key});
+
+  static const routeName = '/hoyoverse';
 
   @override
   State<HoyoversePage> createState() => HoyoversePageState();

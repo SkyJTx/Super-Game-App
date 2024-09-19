@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
 import 'package:sga/client/constant/theme.dart';
+import 'package:sga/client/presentation/main_page/home_page.dart';
+import 'package:sga/client/presentation/main_page/hoyoverse_page.dart';
+import 'package:sga/client/presentation/main_page/kurogame._page.dart';
+import 'package:sga/client/presentation/main_page/setting_page.dart';
 import 'package:sga/client/repository/global_repo.dart';
-import 'package:sga/client/controller/main_page/main_page_bloc.dart';
 import 'package:sga/client/controller/theme/theme_bloc.dart';
 import 'package:sga/client/presentation/main_page.dart';
 import 'package:sga/dependencies_injector.dart';
@@ -36,6 +41,37 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  Page<dynamic> Function(BuildContext, GoRouterState) goPageBuilder({
+    required Widget Function(BuildContext context, GoRouterState state) builder,
+  }) {
+    return (BuildContext context, GoRouterState state) {
+      return CustomTransitionPage(
+        key: state.pageKey,
+        child: builder(context, state),
+        transitionDuration: 0.seconds,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return Animate(
+            effects: [
+              FadeEffect(
+                curve: Curves.easeInOutCubicEmphasized,
+                duration: 0.5.seconds,
+                begin: 0.0,
+                end: 1.0,
+              ),
+              SlideEffect(
+                curve: Curves.easeInOutCubicEmphasized,
+                duration: 0.5.seconds,
+                begin: const Offset(0.5, 0),
+                end: const Offset(0, 0),
+              ),
+            ],
+            child: child,
+          );
+        },
+      );
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final globalRepo = GlobalRepository.of(context);
@@ -43,16 +79,59 @@ class MyAppState extends State<MyApp> {
       builder: (context, orientation, screenType) {
         return BlocBuilder<ThemeProvider, ThemeMode>(
           builder: (context, state) {
-            return MaterialApp(
-              navigatorKey: globalRepo.navigatorKey,
+            return MaterialApp.router(
+              routerConfig: GoRouter(
+                initialLocation: HomePage.routeName,
+                routes: [
+                  ShellRoute(
+                    pageBuilder: (context, state, child) {
+                      return MaterialPage(
+                        child: SelectionArea(
+                          child: MainPage(
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: HomePage.routeName,
+                        pageBuilder: goPageBuilder(
+                          builder: (context, state) {
+                            return const HomePage();
+                          },
+                        ),
+                      ),
+                      GoRoute(
+                        path: HoyoversePage.routeName,
+                        pageBuilder: goPageBuilder(
+                          builder: (context, state) {
+                            return const HoyoversePage();
+                          },
+                        ),
+                      ),
+                      GoRoute(
+                        path: KurogamePage.routeName,
+                        pageBuilder: goPageBuilder(
+                          builder: (context, state) {
+                            return const KurogamePage();
+                          },
+                        ),
+                      ),
+                      GoRoute(
+                        path: SettingPage.routeName,
+                        pageBuilder: goPageBuilder(
+                          builder: (context, state) {
+                            return const SettingPage();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               scaffoldMessengerKey: globalRepo.scaffoldMessengerKey,
               title: 'Flutter Demo',
-              home: SelectionArea(
-                child: BlocProvider(
-                  create: (context) => MainBloc(),
-                  child: const MainPage(),
-                ),
-              ),
               theme: lightTheme,
               darkTheme: darkTheme,
               themeMode: state,
@@ -66,10 +145,3 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
-
-//! ApiActId.honkaiImpact3rd {"retcode":0,"message":"OK","data":{"code":"ok"}}
-//! ApiActId.tearsOfThemis {"retcode":0,"message":"OK","data":{"code":"","risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}
-//! ApiActId.genshinImpact {"retcode":0,"message":"OK","data":{"code":"ok","first_bind":false,"gt_result":{"risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}}
-//! ApiActId.honkaiStarRail {"retcode":0,"message":"OK","data":{"code":"","risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}
-//! ApiActId.zenlessZoneZero {"retcode":0,"message":"OK","data":{"code":"","risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}
- 
