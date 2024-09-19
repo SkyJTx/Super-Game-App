@@ -1,29 +1,39 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
+part of 'check_response.dart';
 
-class CheckResponse {
-  int retcode;
-  String message;
-  CheckData? data;
+/* {
+"total_sign_day":2,
+"today":"2024-09-18",
+"is_sign":false,
+"is_sub":true,
+"region":"prod_official_asia",
+"sign_cnt_missed":15,
+"short_sign_day":0,
+"send_first":false
+} */
 
-  CheckResponse({
-    required this.retcode,
-    required this.message,
+class HonkaiStarRailCheckResponse extends CheckResponse {
+  HonkaiStarRailCheckData? data;
+
+  HonkaiStarRailCheckResponse({
+    required super.retcode,
+    required super.message,
     required this.data,
   });
 
-  CheckResponse copyWith({
+  @override
+  HonkaiStarRailCheckResponse copyWith({
     int? retcode,
     String? message,
-    CheckData? data,
+    HonkaiStarRailCheckData? data,
   }) {
-    return CheckResponse(
+    return HonkaiStarRailCheckResponse(
       retcode: retcode ?? this.retcode,
       message: message ?? this.message,
       data: data ?? this.data,
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'retcode': retcode,
@@ -32,81 +42,77 @@ class CheckResponse {
     };
   }
 
-  factory CheckResponse.fromMap(Map<String, dynamic> map) {
-    return CheckResponse(
+  factory HonkaiStarRailCheckResponse.fromMap(Map<String, dynamic> map) {
+    return HonkaiStarRailCheckResponse(
       retcode: map['retcode'] as int,
       message: map['message'] as String,
-      data: map['data'] != null ? CheckData.fromMap(map['data'] as Map<String, dynamic>) : null,
+      data: map['data'] != null ? HonkaiStarRailCheckData.fromMap(map['data'] as Map<String, dynamic>) : null,
     );
   }
 
+  @override
   String toJson() => json.encode(toMap());
 
-  factory CheckResponse.fromJson(String source) =>
-      CheckResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory HonkaiStarRailCheckResponse.fromJson(String source) =>
+      HonkaiStarRailCheckResponse.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'CheckResponse(retcode: $retcode, message: $message, data: $data)';
+  String toString() =>
+      'HonkaiStarRailCheckResponse(retcode: $retcode, message: $message, data: $data)';
 
   @override
-  bool operator ==(covariant CheckResponse other) {
+  bool operator ==(covariant HonkaiStarRailCheckResponse other) {
     if (identical(this, other)) return true;
 
     return other.retcode == retcode && other.message == message && other.data == data;
   }
 
   @override
-  int get hashCode => retcode.hashCode ^ message.hashCode ^ data.hashCode;
+  int get hashCode {
+    return retcode.hashCode ^ message.hashCode ^ data.hashCode;
+  }
 }
 
-class CheckData {
+class HonkaiStarRailCheckData {
   int totalSignDay;
   String today;
   bool isSign;
-  bool? firstBind;
   bool isSub;
   String region;
-  int? signCntMissed;
-  int? shortSignDay;
-  bool? sendFirst;
-  bool? monthLastDay;
+  int signCntMissed;
+  int shortSignDay;
+  bool sendFirst;
 
-  CheckData({
+  HonkaiStarRailCheckData({
     required this.totalSignDay,
     required this.today,
     required this.isSign,
-    this.firstBind,
     required this.isSub,
     required this.region,
     required this.signCntMissed,
     required this.shortSignDay,
     required this.sendFirst,
-    this.monthLastDay,
   });
 
-  CheckData copyWith({
+  HonkaiStarRailCheckData copyWith({
     int? totalSignDay,
     String? today,
     bool? isSign,
-    bool? firstBind,
     bool? isSub,
     String? region,
     int? signCntMissed,
     int? shortSignDay,
     bool? sendFirst,
-    bool? monthLastDay,
   }) {
-    return CheckData(
+    return HonkaiStarRailCheckData(
       totalSignDay: totalSignDay ?? this.totalSignDay,
       today: today ?? this.today,
       isSign: isSign ?? this.isSign,
-      firstBind: firstBind ?? this.firstBind,
       isSub: isSub ?? this.isSub,
       region: region ?? this.region,
       signCntMissed: signCntMissed ?? this.signCntMissed,
       shortSignDay: shortSignDay ?? this.shortSignDay,
       sendFirst: sendFirst ?? this.sendFirst,
-      monthLastDay: monthLastDay ?? this.monthLastDay,
     );
   }
 
@@ -115,55 +121,49 @@ class CheckData {
       'total_sign_day': totalSignDay,
       'today': today,
       'is_sign': isSign,
-      'first_bind': firstBind,
       'is_sub': isSub,
       'region': region,
       'sign_cnt_missed': signCntMissed,
       'short_sign_day': shortSignDay,
       'send_first': sendFirst,
-      'month_last_day': monthLastDay,
     };
   }
 
-  factory CheckData.fromMap(Map<String, dynamic> map) {
-    return CheckData(
+  factory HonkaiStarRailCheckData.fromMap(Map<String, dynamic> map) {
+    return HonkaiStarRailCheckData(
       totalSignDay: map['total_sign_day'] as int,
       today: map['today'] as String,
       isSign: map['is_sign'] as bool,
-      firstBind: map['first_bind'] != null ? map['first_bind'] as bool : null,
       isSub: map['is_sub'] as bool,
       region: map['region'] as String,
-      signCntMissed: map['sign_cnt_missed'] != null ? map['sign_cnt_missed'] as int : null,
-      shortSignDay: map['short_sign_day'] != null ? map['short_sign_day'] as int : null,
-      sendFirst: map['send_first'] != null ? map['send_first'] as bool : null,
-      monthLastDay: map['month_last_day'] != null ? map['month_last_day'] as bool : null,
+      signCntMissed: map['sign_cnt_missed'] as int,
+      shortSignDay: map['short_sign_day'] as int,
+      sendFirst: map['send_first'] as bool,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CheckData.fromJson(String source) =>
-      CheckData.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory HonkaiStarRailCheckData.fromJson(String source) =>
+      HonkaiStarRailCheckData.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'CheckData(totalSignDay: $totalSignDay, today: $today, isSign: $isSign, firstBind: $firstBind, isSub: $isSub, region: $region, signCntMissed: $signCntMissed, shortSignDay: $shortSignDay, sendFirst: $sendFirst, monthLastDay: $monthLastDay)';
+    return 'HonkaiStarRailCheckData(totalSignDay: $totalSignDay, today: $today, isSign: $isSign, isSub: $isSub, region: $region, signCntMissed: $signCntMissed, shortSignDay: $shortSignDay, sendFirst: $sendFirst)';
   }
 
   @override
-  bool operator ==(covariant CheckData other) {
+  bool operator ==(covariant HonkaiStarRailCheckData other) {
     if (identical(this, other)) return true;
 
     return other.totalSignDay == totalSignDay &&
         other.today == today &&
         other.isSign == isSign &&
-        other.firstBind == firstBind &&
         other.isSub == isSub &&
         other.region == region &&
         other.signCntMissed == signCntMissed &&
         other.shortSignDay == shortSignDay &&
-        other.sendFirst == sendFirst &&
-        other.monthLastDay == monthLastDay;
+        other.sendFirst == sendFirst;
   }
 
   @override
@@ -171,12 +171,10 @@ class CheckData {
     return totalSignDay.hashCode ^
         today.hashCode ^
         isSign.hashCode ^
-        firstBind.hashCode ^
         isSub.hashCode ^
         region.hashCode ^
         signCntMissed.hashCode ^
         shortSignDay.hashCode ^
-        sendFirst.hashCode ^
-        monthLastDay.hashCode;
+        sendFirst.hashCode;
   }
 }

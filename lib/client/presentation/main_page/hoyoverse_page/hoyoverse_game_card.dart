@@ -1,26 +1,21 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:sga/client/repository/global_repo.dart';
-import 'package:sga/server/constant/hoyoverse/request_event.dart';
-import 'package:sga/server/data_model/hoyoverse/response/check_response.dart';
-import 'package:sga/server/data_model/hoyoverse/response/claim_response.dart';
 
 class HoyoverseGameCard extends StatefulWidget {
   const HoyoverseGameCard({
     super.key,
     required this.imageProvider,
     required this.title,
-    required this.requestEvent,
+    required this.onInit,
     required this.onClaim,
     required this.onCheck,
   });
 
   final ImageProvider imageProvider;
   final String title;
-  final RequestEvent requestEvent;
-  final Future<ClaimResponse> Function(RequestEvent) onClaim;
-  final Future<CheckResponse> Function(RequestEvent) onCheck;
+  final Future<bool> Function() onInit;
+  final Future<bool> Function() onClaim;
+  final Future<bool> Function() onCheck;
 
   @override
   State<HoyoverseGameCard> createState() => HoyoverseGameCardState();
@@ -32,20 +27,17 @@ class HoyoverseGameCardState extends State<HoyoverseGameCard> {
   @override
   void initState() {
     super.initState();
-    widget.onCheck(widget.requestEvent).then((value) {
+    widget.onInit().then((value) {
       if (!context.mounted) return;
       setState(() {
-        claimStatus = value.data?.isSign ?? true;
+        claimStatus = value;
       });
-    }).onError((e, s) {
-      log('${widget.title} Error: $e', error: e, stackTrace: s);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final globalRepo = GlobalRepository.of(context);
-    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -87,32 +79,24 @@ class HoyoverseGameCardState extends State<HoyoverseGameCard> {
                   onPressed: !claimStatus
                       ? () async {
                           try {
-                            final response = await widget.onClaim(widget.requestEvent);
+                            final res = await widget.onClaim();
+                            if (!res) return;
                             if (!context.mounted) return;
-                            globalRepo.showSnackBar(
-                              Text(
-                                response.message,
-                                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
-                              ),
-                              color: Colors.green,
+                            globalRepo.showSuccessSnackBar(
+                              context,
+                              message: 'Claimed successfully',
                             );
-                            final checkResponse = await widget.onCheck(widget.requestEvent);
-                            if (!context.mounted) return;
+                            final check = await widget.onCheck();
                             setState(() {
-                              claimStatus = checkResponse.data?.isSign ?? true;
+                              claimStatus = check;
                             });
                           } catch (e) {
-                            globalRepo.showSnackBar(
-                              Text(
-                                e.toString(),
-                                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
-                              ),
-                              color: Colors.red,
-                            );
+                            if (!context.mounted) return;
+                            globalRepo.showErrorSnackBar(context, message: e.toString());
                           }
                         }
                       : null,
-                  child: const Text('Claim'),
+                  child: const Text('Check-In'),
                 ),
               ],
             ),

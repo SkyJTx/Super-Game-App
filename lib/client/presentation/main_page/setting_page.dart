@@ -60,20 +60,24 @@ class SettingPageState extends State<SettingPage> {
     return Container(
       padding: const EdgeInsets.all(8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          leading,
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              Text(title, style: Theme.of(context).textTheme.titleSmall),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodySmall,
+              leading,
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ],
           ),
-          Flexible(child: Container()),
           SizedBox(
             width: min(300, 30.w),
             child: TextField(
@@ -108,20 +112,24 @@ class SettingPageState extends State<SettingPage> {
     return Container(
       padding: const EdgeInsets.all(8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          leading,
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              Text(title, style: Theme.of(context).textTheme.titleSmall),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodySmall,
+              leading,
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ],
           ),
-          Flexible(child: Container()),
           trailing,
         ],
       ),
@@ -147,6 +155,7 @@ class SettingPageState extends State<SettingPage> {
                 title: 'Theme Mode',
                 subtitle: 'Current theme mode for this app.',
                 trailing: DropdownMenu<ThemeMode>(
+                  width: min(200, 30.w),
                   controller: themeController,
                   dropdownMenuEntries: ThemeMode.values
                       .map(

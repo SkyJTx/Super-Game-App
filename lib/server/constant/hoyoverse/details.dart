@@ -1,7 +1,7 @@
 import 'package:sga/server/constant/hoyoverse/api_act_id.dart';
 import 'package:sga/server/constant/hoyoverse/api_url.dart';
 
-enum RequestEvent {
+enum HoYoverseGame {
   honkaiImpact3rd(
     ApiActId.honkaiImpact3rd,
     CheckinUrl.honkaiImpact3rd,
@@ -29,13 +29,13 @@ enum RequestEvent {
   ),
   ;
 
-  const RequestEvent(this.actId, this.checkinUrl, this.infoUrl);
+  const HoYoverseGame(this.dailyLoginActId, this.checkinUrl, this.infoUrl);
 
-  final ApiActId actId;
+  final ApiActId dailyLoginActId;
   final CheckinUrl checkinUrl;
   final InfoUrl infoUrl;
 
-  String get actIdValue => actId.actId;
+  String get dailyLoginActIdValue => dailyLoginActId.actId;
   String get checkinUrlValue => checkinUrl.getUrl();
-  String get infoUrlValue => infoUrl.getUrl(actIdValue);
+  String get infoUrlValue => infoUrl.getUrl(dailyLoginActIdValue);
 }

@@ -66,3 +66,10 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
+
+//! ApiActId.honkaiImpact3rd {"retcode":0,"message":"OK","data":{"code":"ok"}}
+//! ApiActId.tearsOfThemis {"retcode":0,"message":"OK","data":{"code":"","risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}
+//! ApiActId.genshinImpact {"retcode":0,"message":"OK","data":{"code":"ok","first_bind":false,"gt_result":{"risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}}
+//! ApiActId.honkaiStarRail {"retcode":0,"message":"OK","data":{"code":"","risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}
+//! ApiActId.zenlessZoneZero {"retcode":0,"message":"OK","data":{"code":"","risk_code":0,"gt":"","challenge":"","success":0,"is_risk":false}}
+ 

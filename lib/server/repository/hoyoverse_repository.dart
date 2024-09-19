@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:sga/server/api.dart';
 import 'package:sga/server/component/exception.dart';
-import 'package:sga/server/constant/hoyoverse/request_event.dart';
-import 'package:sga/server/data_model/hoyoverse/response/check_response.dart';
-import 'package:sga/server/data_model/hoyoverse/response/claim_response.dart';
+import 'package:sga/server/constant/hoyoverse/details.dart';
+import 'package:sga/server/data_model/hoyoverse/daily_login/check/check_response.dart';
+import 'package:sga/server/data_model/hoyoverse/daily_login/claim/claim_response.dart';
 import 'package:sga/server/repository/settings_repository.dart';
 
 class HoYoverseRepository {
@@ -24,7 +24,7 @@ class HoYoverseRepository {
     return RepositoryProvider.of<HoYoverseRepository>(context);
   }
 
-  Future<ClaimResponse> claimDailyReward(RequestEvent event) async {
+  Future<ClaimResponse> claimDailyReward(HoYoverseGame game) async {
     final ltuid = await SettingsRepository.hoyoverseLTUID.get();
     final ltoken = await SettingsRepository.hoyoverseLToken.get();
     final deviceId = await SettingsRepository.hoyoverseDeviceId.get();
@@ -51,39 +51,97 @@ class HoYoverseRepository {
       'x-rpc-device_name': '',
       'x-rpc-platform': '4',
     };
-    final body = {'act_id': event.actIdValue};
+    final body = {'act_id': game.dailyLoginActIdValue};
 
     final res = await _api.post(
       header,
-      event.checkinUrlValue,
+      game.checkinUrlValue,
       body,
     );
 
     if (res.statusCode == HttpStatus.ok) {
-      log('${event.actId.toString()} ${res.body}');
-      final data = ClaimResponse.fromJson(res.body);
-      if (data.retcode != 0) {
-        throw ResponseException(
-          'Error: ${event.actIdValue}, ${data.message}',
-          res.statusCode,
-        );
+      log('${game.dailyLoginActIdValue} ${res.body}');
+      switch (game) {
+        case HoYoverseGame.honkaiImpact3rd:
+          final body = HonkaiImpact3rdClaimResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${game.dailyLoginActIdValue}, ${body.message}',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.genshinImpact:
+          final body = GenshinImpactClaimResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${body.retcode}, ${body.message}',
+              res.statusCode,
+            );
+          } else if (body.data!.gtResult.isRisk) {
+            throw ResponseException(
+              'Error: ${body.retcode}, Captcha is Required',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.tearsOfThemis:
+          final body = TearsOfThemisClaimResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${body.retcode}, ${body.message}',
+              res.statusCode,
+            );
+          } else if (body.data!.isRisk) {
+            throw ResponseException(
+              'Error: ${body.retcode}, Captcha is Required',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.honkaiStarRail:
+          final body = HonkaiStarRailClaimResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${body.retcode}, ${body.message}',
+              res.statusCode,
+            );
+          } else if (body.data!.isRisk) {
+            throw ResponseException(
+              'Error: ${body.retcode}, Captcha is Required',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.zenlessZoneZero:
+          final body = ZenlessZoneZeroClaimResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${body.retcode}, ${body.message}',
+              res.statusCode,
+            );
+          } else if (body.data!.isRisk) {
+            throw ResponseException(
+              'Error: ${body.retcode}, Captcha is Required',
+              res.statusCode,
+            );
+          }
+          return body;
+        default:
+          throw ResponseException(
+            'Error: ${game.dailyLoginActIdValue}, Unknown Event',
+            res.statusCode,
+          );
       }
-      if (data.data != null && data.data!.isRisk) {
-        throw ResponseException(
-          'Captcha Required: ${event.actIdValue}, ${data.data!.challenge}',
-          res.statusCode,
-        );
-      }
-      return data;
     } else {
       throw ResponseException(
-        res.reasonPhrase ?? 'Error from ${event.checkinUrlValue}',
+        res.reasonPhrase ?? 'Error from ${game.checkinUrlValue}',
         res.statusCode,
       );
     }
   }
 
-  Future<CheckResponse> check(RequestEvent event) async {
+  Future<CheckResponse> checkDailyReward(HoYoverseGame event) async {
     final ltuid = await SettingsRepository.hoyoverseLTUID.get();
     final ltoken = await SettingsRepository.hoyoverseLToken.get();
     final header = {
@@ -109,15 +167,59 @@ class HoYoverseRepository {
     );
 
     if (res.statusCode == HttpStatus.ok) {
-      log('${event.actId.toString()} ${res.body}');
-      final data = CheckResponse.fromJson(res.body);
-      if (data.retcode != 0) {
-        throw ResponseException(
-          'Error: ${event.actIdValue}, ${data.message}',
-          res.statusCode,
-        );
+      log('${event.dailyLoginActIdValue} ${res.body}');
+      switch (event) {
+        case HoYoverseGame.honkaiImpact3rd:
+          final body = HonkaiImpact3rdCheckResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.genshinImpact:
+          final body = GenshinImpactCheckResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.tearsOfThemis:
+          final body = TearsOfThemisCheckResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.honkaiStarRail:
+          final body = HonkaiStarRailCheckResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
+              res.statusCode,
+            );
+          }
+          return body;
+        case HoYoverseGame.zenlessZoneZero:
+          final body = ZenlessZoneZeroCheckResponse.fromJson(res.body);
+          if (body.retcode != 0 || body.data == null) {
+            throw ResponseException(
+              'Error: ${event.dailyLoginActIdValue}, ${body.message}',
+              res.statusCode,
+            );
+          }
+          return body;
+        default:
+          throw ResponseException(
+            'Error: ${event.dailyLoginActIdValue}, Unknown Event',
+            res.statusCode,
+          );
       }
-      return data;
     } else {
       throw ResponseException(
         res.reasonPhrase ?? 'Error from ${event.infoUrlValue}',

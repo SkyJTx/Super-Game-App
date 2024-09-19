@@ -1,73 +1,81 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
+part of 'claim_response.dart';
 
-class ClaimResponse {
-  int retcode;
-  String message;
-  ClaimData? data;
+/* {
+"code":"",
+"risk_code":0,
+"gt":"",
+"challenge":"",
+"success":0,
+"is_risk":false
+} */
 
-  ClaimResponse({
-    required this.retcode,
-    required this.message,
+class TearsOfThemisClaimResponse extends ClaimResponse {
+  TearsOfThemisClaimData? data;
+
+  TearsOfThemisClaimResponse({
+    required super.retcode,
+    required super.message,
     required this.data,
   });
 
-  ClaimResponse copyWith({
+  @override
+  TearsOfThemisClaimResponse copyWith({
     int? retcode,
     String? message,
-    ClaimData? data,
+    TearsOfThemisClaimData? data,
   }) {
-    return ClaimResponse(
-      retcode: retcode ?? this.retcode,
-      message: message ?? this.message,
+    return TearsOfThemisClaimResponse(
+      retcode: retcode ?? super.retcode,
+      message: message ?? super.message,
       data: data ?? this.data,
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'retcode': retcode,
-      'message': message,
+      'retcode': super.retcode,
+      'message': super.message,
       'data': data?.toMap(),
     };
   }
 
-  factory ClaimResponse.fromMap(Map<String, dynamic> map) {
-    return ClaimResponse(
+  factory TearsOfThemisClaimResponse.fromMap(Map<String, dynamic> map) {
+    return TearsOfThemisClaimResponse(
       retcode: map['retcode'] as int,
       message: map['message'] as String,
-      data: map['data'] != null ? ClaimData.fromMap(map['data'] as Map<String, dynamic>) : null,
+      data: map['data'] != null ? TearsOfThemisClaimData.fromMap(map['data'] as Map<String, dynamic>) : null,
     );
   }
 
+  @override
   String toJson() => json.encode(toMap());
 
-  factory ClaimResponse.fromJson(String source) =>
-      ClaimResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory TearsOfThemisClaimResponse.fromJson(String source) =>
+      TearsOfThemisClaimResponse.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'ClaimResponse(retcode: $retcode, message: $message, data: $data)';
+  String toString() => 'TearsOfThemisClaimResponse(retcode: $retcode, message: $message, data: $data)';
 
   @override
-  bool operator ==(covariant ClaimResponse other) {
+  bool operator ==(covariant TearsOfThemisClaimResponse other) {
     if (identical(this, other)) return true;
 
-    return other.retcode == retcode && other.message == message && other.data == data;
+    return other.retcode == super.retcode && other.message == super.message && other.data == data;
   }
 
   @override
-  int get hashCode => retcode.hashCode ^ message.hashCode ^ data.hashCode;
+  int get hashCode => super.retcode.hashCode ^ super.message.hashCode ^ data.hashCode;
 }
 
-class ClaimData {
+class TearsOfThemisClaimData {
   String code;
   int riskCode;
   String gt;
   String challenge;
   int success;
   bool isRisk;
-
-  ClaimData({
+  TearsOfThemisClaimData({
     required this.code,
     required this.riskCode,
     required this.gt,
@@ -76,7 +84,7 @@ class ClaimData {
     required this.isRisk,
   });
 
-  ClaimData copyWith({
+  TearsOfThemisClaimData copyWith({
     String? code,
     int? riskCode,
     String? gt,
@@ -84,7 +92,7 @@ class ClaimData {
     int? success,
     bool? isRisk,
   }) {
-    return ClaimData(
+    return TearsOfThemisClaimData(
       code: code ?? this.code,
       riskCode: riskCode ?? this.riskCode,
       gt: gt ?? this.gt,
@@ -105,8 +113,8 @@ class ClaimData {
     };
   }
 
-  factory ClaimData.fromMap(Map<String, dynamic> map) {
-    return ClaimData(
+  factory TearsOfThemisClaimData.fromMap(Map<String, dynamic> map) {
+    return TearsOfThemisClaimData(
       code: map['code'] as String,
       riskCode: map['risk_code'] as int,
       gt: map['gt'] as String,
@@ -118,16 +126,16 @@ class ClaimData {
 
   String toJson() => json.encode(toMap());
 
-  factory ClaimData.fromJson(String source) =>
-      ClaimData.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory TearsOfThemisClaimData.fromJson(String source) =>
+      TearsOfThemisClaimData.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'ClaimData(code: $code, riskCode: $riskCode, gt: $gt, challenge: $challenge, success: $success, isRisk: $isRisk)';
+    return 'TearsOfThemisClaimData(code: $code, riskCode: $riskCode, gt: $gt, challenge: $challenge, success: $success, isRisk: $isRisk)';
   }
 
   @override
-  bool operator ==(covariant ClaimData other) {
+  bool operator ==(covariant TearsOfThemisClaimData other) {
     if (identical(this, other)) return true;
 
     return other.code == code &&

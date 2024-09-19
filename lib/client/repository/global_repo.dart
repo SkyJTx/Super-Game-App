@@ -23,4 +23,34 @@ class GlobalRepository {
       ),
     );
   }
+
+  void showSuccessSnackBar(BuildContext context, {required String message}) {
+    showSnackBar(
+      Text(
+        message,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+      ),
+      color: Colors.green,
+    );
+  }
+
+  void showWarningSnackBar(BuildContext context, {required String message}) {
+    showSnackBar(
+      Text(
+        message,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+      ),
+      color: Colors.orange,
+    );
+  }
+
+  void showErrorSnackBar(BuildContext context, {required String message}) {
+    showSnackBar(
+      Text(
+        message,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+      ),
+      color: Colors.red,
+    );
+  }
 }
