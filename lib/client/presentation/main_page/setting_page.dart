@@ -1,7 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sga/client/component/custom_list_tile.dart';
+import 'package:sga/client/component/custom_text_field.dart';
 import 'package:sga/client/controller/theme/theme_bloc.dart';
+import 'package:sga/client/presentation/main_page/setting_page/auto_daily_login_page.dart';
 import 'package:sga/server/repository/settings_repository.dart';
 import 'package:sizer/sizer.dart';
 
@@ -50,100 +54,6 @@ class SettingPageState extends State<SettingPage> {
     }
   }
 
-  Widget customTextField({
-    required Icon leading,
-    required String title,
-    required String subtitle,
-    required String hintText,
-    required TextEditingController controller,
-    required SettingsRepository setting,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              leading,
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme.of(context).textTheme.titleSmall),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(
-            width: min(300, 30.w),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: hintText,
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-              ),
-              onEditingComplete: () async {
-                final res = controller.text;
-                await setting.set(res);
-              },
-              onTapOutside: (event) async {
-                final res = controller.text;
-                await setting.set(res);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget customListTile({
-    required Icon leading,
-    required String title,
-    required String subtitle,
-    required Widget trailing,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Row(
-              children: [
-                leading,
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleSmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          trailing,
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -158,7 +68,7 @@ class SettingPageState extends State<SettingPage> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const Divider(),
-              customListTile(
+              CustomListTile(
                 leading: const Icon(Icons.brightness_4),
                 title: 'Theme Mode',
                 subtitle: 'Current theme mode for this app.',
@@ -180,6 +90,18 @@ class SettingPageState extends State<SettingPage> {
                   },
                 ),
               ),
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () {
+                  context.go('${SettingPage.routeName}/${AutoDailyLoginSettingPage.routeName}');
+                },
+                child: const CustomListTile(
+                  leading: Icon(Icons.auto_awesome),
+                  title: 'Auto Daily Login',
+                  subtitle: 'Auto daily login for your games.',
+                  trailing: Icon(Icons.chevron_right),
+                ),
+              ),
             ],
           ),
         ),
@@ -195,7 +117,7 @@ class SettingPageState extends State<SettingPage> {
               const Divider(),
               Column(
                 children: [
-                  customTextField(
+                  ListTileTextField(
                     leading: const Icon(Icons.perm_identity),
                     title: 'HoYoverse\'s LTUID',
                     subtitle: 'Your LTUID from HoYoLab.',
@@ -203,7 +125,7 @@ class SettingPageState extends State<SettingPage> {
                     controller: hoyoverseLTUIDController,
                     setting: SettingsRepository.hoyoverseLTUID,
                   ),
-                  customTextField(
+                  ListTileTextField(
                     leading: const Icon(Icons.vpn_key),
                     title: 'HoYoverse\'s LToken',
                     subtitle: 'Your LToken from HoYoLab.',
@@ -211,7 +133,7 @@ class SettingPageState extends State<SettingPage> {
                     controller: hoyoverseLTokenController,
                     setting: SettingsRepository.hoyoverseLToken,
                   ),
-                  customTextField(
+                  ListTileTextField(
                     leading: const Icon(Icons.phone_android),
                     title: 'HoYoverse\'s Device ID',
                     subtitle: 'Your Device ID from HoYoLab.',

@@ -38,4 +38,20 @@ enum HoYoverseGame {
   String get dailyLoginActIdValue => dailyLoginActId.actId;
   String get checkinUrlValue => checkinUrl.getUrl();
   String get infoUrlValue => infoUrl.getUrl(dailyLoginActIdValue);
+
+  @override
+  String toString() {
+    switch (this) {
+      case HoYoverseGame.honkaiImpact3rd:
+        return 'Honkai Impact 3rd';
+      case HoYoverseGame.tearsOfThemis:
+        return 'Tears of Themis';
+      case HoYoverseGame.genshinImpact:
+        return 'Genshin Impact';
+      case HoYoverseGame.honkaiStarRail:
+        return 'Honkai Star Rail';
+      case HoYoverseGame.zenlessZoneZero:
+        return 'Zenless Zone Zero';
+    }
+  }
 }

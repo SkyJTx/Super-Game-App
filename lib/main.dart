@@ -6,8 +6,8 @@ import 'package:http/http.dart';
 import 'package:sga/client/constant/theme.dart';
 import 'package:sga/client/presentation/main_page/home_page.dart';
 import 'package:sga/client/presentation/main_page/hoyoverse_page.dart';
-import 'package:sga/client/presentation/main_page/kurogame._page.dart';
 import 'package:sga/client/presentation/main_page/setting_page.dart';
+import 'package:sga/client/presentation/main_page/setting_page/auto_daily_login_page.dart';
 import 'package:sga/client/repository/global_repo.dart';
 import 'package:sga/client/controller/theme/theme_bloc.dart';
 import 'package:sga/client/presentation/main_page.dart';
@@ -72,6 +72,66 @@ class MyAppState extends State<MyApp> {
     };
   }
 
+  late final GoRouter router;
+
+  @override
+  void didChangeDependencies() {
+    router = GoRouter(
+      navigatorKey: GlobalRepository.of(context).navigatorKey,
+      routes: [
+        ShellRoute(
+          pageBuilder: (context, state, child) {
+            return MaterialPage(
+              child: SelectionArea(
+                child: MainPage(
+                  state: state,
+                  child: child,
+                ),
+              ),
+            );
+          },
+          routes: [
+            GoRoute(
+              path: HomePage.routeName,
+              pageBuilder: goPageBuilder(
+                builder: (context, state) {
+                  return const HomePage();
+                },
+              ),
+            ),
+            GoRoute(
+              path: HoyoversePage.routeName,
+              pageBuilder: goPageBuilder(
+                builder: (context, state) {
+                  return const HoyoversePage();
+                },
+              ),
+            ),
+            GoRoute(
+              path: SettingPage.routeName,
+              pageBuilder: goPageBuilder(
+                builder: (context, state) {
+                  return const SettingPage();
+                },
+              ),
+              routes: [
+                GoRoute(
+                  path: AutoDailyLoginSettingPage.routeName,
+                  pageBuilder: goPageBuilder(
+                    builder: (context, state) {
+                      return const AutoDailyLoginSettingPage();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     final globalRepo = GlobalRepository.of(context);
@@ -80,56 +140,7 @@ class MyAppState extends State<MyApp> {
         return BlocBuilder<ThemeProvider, ThemeMode>(
           builder: (context, state) {
             return MaterialApp.router(
-              routerConfig: GoRouter(
-                initialLocation: HomePage.routeName,
-                routes: [
-                  ShellRoute(
-                    pageBuilder: (context, state, child) {
-                      return MaterialPage(
-                        child: SelectionArea(
-                          child: MainPage(
-                            child: child,
-                          ),
-                        ),
-                      );
-                    },
-                    routes: [
-                      GoRoute(
-                        path: HomePage.routeName,
-                        pageBuilder: goPageBuilder(
-                          builder: (context, state) {
-                            return const HomePage();
-                          },
-                        ),
-                      ),
-                      GoRoute(
-                        path: HoyoversePage.routeName,
-                        pageBuilder: goPageBuilder(
-                          builder: (context, state) {
-                            return const HoyoversePage();
-                          },
-                        ),
-                      ),
-                      GoRoute(
-                        path: KurogamePage.routeName,
-                        pageBuilder: goPageBuilder(
-                          builder: (context, state) {
-                            return const KurogamePage();
-                          },
-                        ),
-                      ),
-                      GoRoute(
-                        path: SettingPage.routeName,
-                        pageBuilder: goPageBuilder(
-                          builder: (context, state) {
-                            return const SettingPage();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              routerConfig: router,
               scaffoldMessengerKey: globalRepo.scaffoldMessengerKey,
               title: 'Flutter Demo',
               theme: lightTheme,

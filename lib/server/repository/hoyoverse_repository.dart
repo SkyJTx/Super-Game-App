@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,10 +10,12 @@ import 'package:sga/server/component/exception.dart';
 import 'package:sga/server/constant/hoyoverse/details.dart';
 import 'package:sga/server/data_model/hoyoverse/daily_login/check/check_response.dart';
 import 'package:sga/server/data_model/hoyoverse/daily_login/claim/claim_response.dart';
+import 'package:sga/server/data_model/hoyoverse/daily_login/daily_login_internal_response.dart';
 import 'package:sga/server/repository/settings_repository.dart';
 
 class HoYoverseRepository {
   late Api _api;
+  Isolate? _backgroundIsolate;
 
   HoYoverseRepository({
     Client? client,
@@ -226,5 +229,198 @@ class HoYoverseRepository {
         res.statusCode,
       );
     }
+  }
+
+  Future<DailyLoginInternalResponse> fullDailyLogin(HoYoverseGame game) async {
+    try {
+      switch (game) {
+        case HoYoverseGame.honkaiImpact3rd:
+          final check = await checkDailyReward(game) as HonkaiImpact3rdCheckResponse;
+          if (check.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${check.retcode}',
+            );
+          } else if (check.data!.isSign) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Already Signed In',
+            );
+          }
+
+          final claim = await claimDailyReward(game) as HonkaiImpact3rdClaimResponse;
+          if (claim.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${claim.retcode}',
+            );
+          }
+          return DailyLoginInternalResponse(
+            success: true,
+            message: 'Success on Daily Checkin',
+          );
+        case HoYoverseGame.genshinImpact:
+          final check = await checkDailyReward(game) as GenshinImpactCheckResponse;
+          if (check.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${check.retcode}',
+            );
+          } else if (check.data!.isSign) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: check.message,
+            );
+          }
+
+          final claim = await claimDailyReward(game) as GenshinImpactClaimResponse;
+          if (claim.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${claim.retcode}',
+            );
+          } else if (claim.data!.gtResult.isRisk) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Captcha is Required',
+            );
+          }
+          return DailyLoginInternalResponse(
+            success: true,
+            message: check.message,
+          );
+        case HoYoverseGame.tearsOfThemis:
+          final check = await checkDailyReward(game) as TearsOfThemisCheckResponse;
+          if (check.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${check.retcode}',
+            );
+          } else if (check.data!.isSign) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Already Signed In',
+            );
+          }
+
+          final claim = await claimDailyReward(game) as TearsOfThemisClaimResponse;
+          if (claim.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${claim.retcode}',
+            );
+          } else if (claim.data!.isRisk) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Captcha is Required',
+            );
+          }
+
+          return DailyLoginInternalResponse(
+            success: true,
+            message: 'Success on Daily Checkin',
+          );
+        case HoYoverseGame.honkaiStarRail:
+          final check = await checkDailyReward(game) as HonkaiStarRailCheckResponse;
+          if (check.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${check.retcode}',
+            );
+          } else if (check.data!.isSign) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Already Signed In',
+            );
+          }
+
+          final claim = await claimDailyReward(game) as HonkaiStarRailClaimResponse;
+          if (claim.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${claim.retcode}',
+            );
+          } else if (claim.data!.isRisk) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Captcha is Required',
+            );
+          }
+
+          return DailyLoginInternalResponse(
+            success: true,
+            message: 'Success on Daily Checkin',
+          );
+        case HoYoverseGame.zenlessZoneZero:
+          final check = await checkDailyReward(game) as ZenlessZoneZeroCheckResponse;
+          if (check.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${check.retcode}',
+            );
+          } else if (check.data!.isSign) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Already Signed In',
+            );
+          }
+
+          final claim = await claimDailyReward(game) as ZenlessZoneZeroClaimResponse;
+          if (claim.data == null) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Error: ${claim.retcode}',
+            );
+          } else if (claim.data!.isRisk) {
+            return DailyLoginInternalResponse(
+              success: false,
+              message: 'Captcha is Required',
+            );
+          }
+
+          return DailyLoginInternalResponse(
+            success: true,
+            message: 'Success on Daily Checkin',
+          );
+        default:
+          throw ResponseException(
+            'Error: ${game.dailyLoginActIdValue}, Unknown Event',
+            404,
+          );
+      }
+    } catch (e) {
+      return DailyLoginInternalResponse(
+        success: false,
+        message: e.toString(),
+      );
+    }
+  }
+
+  Future<Map<HoYoverseGame, DailyLoginInternalResponse>> autoDailyLogin() async {
+    late final bool isHonkaiImpact3rd;
+    late final bool isGenshinImpact;
+    late final bool isTearsOfThemis;
+    late final bool isHonkaiStarRail;
+    late final bool isZenlessZoneZero;
+
+    await Future.wait([
+      SettingsRepository.honkaiImpact3rdDailyCheckin.get().then((value) => isHonkaiImpact3rd = bool.tryParse(value) ?? false),
+      SettingsRepository.genshinImpactDailyCheckin.get().then((value) => isGenshinImpact = bool.tryParse(value) ?? false),
+      SettingsRepository.tearsOfThemisDailyCheckin.get().then((value) => isTearsOfThemis = bool.tryParse(value) ?? false),
+      SettingsRepository.honkaiStarRailDailyCheckin.get().then((value) => isHonkaiStarRail = bool.tryParse(value) ?? false),
+      SettingsRepository.zenlessZoneZeroDailyCheckin.get().then((value) => isZenlessZoneZero = bool.tryParse(value) ?? false),
+    ]);
+
+    final Map<HoYoverseGame, DailyLoginInternalResponse> dailyLogin = {};
+
+    await Future.wait([
+      if (isHonkaiImpact3rd) fullDailyLogin(HoYoverseGame.honkaiImpact3rd).then((value) => dailyLogin[HoYoverseGame.honkaiImpact3rd] = value),
+      if (isGenshinImpact) fullDailyLogin(HoYoverseGame.genshinImpact).then((value) => dailyLogin[HoYoverseGame.genshinImpact] = value),
+      if (isTearsOfThemis) fullDailyLogin(HoYoverseGame.tearsOfThemis).then((value) => dailyLogin[HoYoverseGame.tearsOfThemis] = value),
+      if (isHonkaiStarRail) fullDailyLogin(HoYoverseGame.honkaiStarRail).then((value) => dailyLogin[HoYoverseGame.honkaiStarRail] = value),
+      if (isZenlessZoneZero) fullDailyLogin(HoYoverseGame.zenlessZoneZero).then((value) => dailyLogin[HoYoverseGame.zenlessZoneZero] = value),
+    ]);
+
+    return dailyLogin;
   }
 }
