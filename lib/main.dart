@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart';
 import 'package:sga/client/constant/theme.dart';
 import 'package:sga/client/presentation/main_page/home_page.dart';
 import 'package:sga/client/presentation/main_page/hoyoverse_page.dart';
@@ -18,10 +17,9 @@ import 'package:sizer/sizer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
-  final client = Client();
   runApp(MultiRepositoryProvider(
     providers: [
-      RepositoryProvider(create: (context) => HoYoverseRepository(client: client)),
+      RepositoryProvider(create: (context) => HoYoverseRepository()),
       RepositoryProvider(create: (context) => GlobalRepository()),
     ],
     child: BlocProvider(
