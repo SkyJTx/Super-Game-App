@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,14 +13,17 @@ import 'package:sga/server/data_model/hoyoverse/daily_login/daily_login_internal
 import 'package:sga/server/repository/settings_repository.dart';
 
 class HoYoverseRepository {
-  late Api _api;
-  Isolate? _backgroundIsolate;
+  final _api = Api(client: HoYoverseRepository._client);
 
-  HoYoverseRepository({
-    Client? client,
-  }) {
-    _api = Api(client: client);
+  static final Client _client = Client();
+
+  static final instance = HoYoverseRepository._internal();
+
+  factory HoYoverseRepository() {
+    return instance;
   }
+
+  HoYoverseRepository._internal();
 
   static HoYoverseRepository of(BuildContext context) {
     return RepositoryProvider.of<HoYoverseRepository>(context);
@@ -404,23 +406,45 @@ class HoYoverseRepository {
     late final bool isZenlessZoneZero;
 
     await Future.wait([
-      SettingsRepository.honkaiImpact3rdDailyCheckin.get().then((value) => isHonkaiImpact3rd = bool.tryParse(value) ?? false),
-      SettingsRepository.genshinImpactDailyCheckin.get().then((value) => isGenshinImpact = bool.tryParse(value) ?? false),
-      SettingsRepository.tearsOfThemisDailyCheckin.get().then((value) => isTearsOfThemis = bool.tryParse(value) ?? false),
-      SettingsRepository.honkaiStarRailDailyCheckin.get().then((value) => isHonkaiStarRail = bool.tryParse(value) ?? false),
-      SettingsRepository.zenlessZoneZeroDailyCheckin.get().then((value) => isZenlessZoneZero = bool.tryParse(value) ?? false),
+      SettingsRepository.honkaiImpact3rdDailyCheckin
+          .get()
+          .then((value) => isHonkaiImpact3rd = bool.tryParse(value) ?? false),
+      SettingsRepository.genshinImpactDailyCheckin
+          .get()
+          .then((value) => isGenshinImpact = bool.tryParse(value) ?? false),
+      SettingsRepository.tearsOfThemisDailyCheckin
+          .get()
+          .then((value) => isTearsOfThemis = bool.tryParse(value) ?? false),
+      SettingsRepository.honkaiStarRailDailyCheckin
+          .get()
+          .then((value) => isHonkaiStarRail = bool.tryParse(value) ?? false),
+      SettingsRepository.zenlessZoneZeroDailyCheckin
+          .get()
+          .then((value) => isZenlessZoneZero = bool.tryParse(value) ?? false),
     ]);
 
     final Map<HoYoverseGame, DailyLoginInternalResponse> dailyLogin = {};
 
     await Future.wait([
-      if (isHonkaiImpact3rd) fullDailyLogin(HoYoverseGame.honkaiImpact3rd).then((value) => dailyLogin[HoYoverseGame.honkaiImpact3rd] = value),
-      if (isGenshinImpact) fullDailyLogin(HoYoverseGame.genshinImpact).then((value) => dailyLogin[HoYoverseGame.genshinImpact] = value),
-      if (isTearsOfThemis) fullDailyLogin(HoYoverseGame.tearsOfThemis).then((value) => dailyLogin[HoYoverseGame.tearsOfThemis] = value),
-      if (isHonkaiStarRail) fullDailyLogin(HoYoverseGame.honkaiStarRail).then((value) => dailyLogin[HoYoverseGame.honkaiStarRail] = value),
-      if (isZenlessZoneZero) fullDailyLogin(HoYoverseGame.zenlessZoneZero).then((value) => dailyLogin[HoYoverseGame.zenlessZoneZero] = value),
+      if (isHonkaiImpact3rd)
+        fullDailyLogin(HoYoverseGame.honkaiImpact3rd)
+            .then((value) => dailyLogin[HoYoverseGame.honkaiImpact3rd] = value),
+      if (isGenshinImpact)
+        fullDailyLogin(HoYoverseGame.genshinImpact)
+            .then((value) => dailyLogin[HoYoverseGame.genshinImpact] = value),
+      if (isTearsOfThemis)
+        fullDailyLogin(HoYoverseGame.tearsOfThemis)
+            .then((value) => dailyLogin[HoYoverseGame.tearsOfThemis] = value),
+      if (isHonkaiStarRail)
+        fullDailyLogin(HoYoverseGame.honkaiStarRail)
+            .then((value) => dailyLogin[HoYoverseGame.honkaiStarRail] = value),
+      if (isZenlessZoneZero)
+        fullDailyLogin(HoYoverseGame.zenlessZoneZero)
+            .then((value) => dailyLogin[HoYoverseGame.zenlessZoneZero] = value),
     ]);
 
     return dailyLogin;
   }
+
+  
 }
