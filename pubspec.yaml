@@ -105,6 +105,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/logo/
     - assets/images/hoyoverse/
     - assets/images/hoyoverse/honkai_impact_3rd/
     - assets/images/hoyoverse/tears_of_themis/
