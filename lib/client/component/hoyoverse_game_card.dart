@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sga/client/component/value_change_notifier.dart';
 import 'package:sga/client/repository/global_repo.dart';
 
 class HoyoverseGameCard extends StatefulWidget {
   const HoyoverseGameCard({
     super.key,
+    required this.checkNotifier,
     required this.imageProvider,
     required this.title,
     required this.onInit,
@@ -11,6 +14,7 @@ class HoyoverseGameCard extends StatefulWidget {
     required this.onCheck,
   });
 
+  final ValueChangeNotifier<bool> checkNotifier;
   final ImageProvider imageProvider;
   final String title;
   final Future<bool> Function() onInit;
@@ -22,16 +26,11 @@ class HoyoverseGameCard extends StatefulWidget {
 }
 
 class HoyoverseGameCardState extends State<HoyoverseGameCard> {
-  bool claimStatus = true;
-
   @override
   void initState() {
     super.initState();
     widget.onInit().then((value) {
-      if (!context.mounted) return;
-      setState(() {
-        claimStatus = value;
-      });
+      widget.checkNotifier.value = value;
     }).onError((error, stackTrace) {
       if (!context.mounted) return;
       GlobalRepository.of(context).showErrorSnackBar(context, message: error.toString());
@@ -75,31 +74,46 @@ class HoyoverseGameCardState extends State<HoyoverseGameCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
-                  ),
-                  onPressed: !claimStatus
-                      ? () async {
-                          try {
-                            final res = await widget.onClaim();
-                            if (!res) return;
-                            if (!context.mounted) return;
-                            globalRepo.showSuccessSnackBar(
-                              context,
-                              message: 'Claimed successfully',
-                            );
-                            final check = await widget.onCheck();
-                            setState(() {
-                              claimStatus = check;
-                            });
-                          } catch (e) {
-                            if (!context.mounted) return;
-                            globalRepo.showErrorSnackBar(context, message: e.toString());
-                          }
-                        }
-                      : null,
-                  child: const Text('Check-In'),
+                BlocBuilder<ValueChangeNotifier<bool>, bool>(
+                  bloc: widget.checkNotifier,
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+                      ),
+                      onPressed: !state
+                          ? () async {
+                              try {
+                                final isSigned = await widget.onCheck();
+                                widget.checkNotifier.value = isSigned;
+                                if (isSigned) {
+                                  if (!context.mounted) return;
+                                  globalRepo.showWarningSnackBar(
+                                    context,
+                                    message: 'Already claimed',
+                                  );
+                                  return;
+                                }
+
+                                final signedSuccess = await widget.onClaim();
+                                if (!signedSuccess) return;
+                                if (!context.mounted) return;
+                                globalRepo.showSuccessSnackBar(
+                                  context,
+                                  message: 'Claimed successfully',
+                                );
+
+                                final check = await widget.onCheck();
+                                widget.checkNotifier.value = check;
+                              } catch (e) {
+                                if (!context.mounted) return;
+                                globalRepo.showErrorSnackBar(context, message: e.toString());
+                              }
+                            }
+                          : null,
+                      child: const Text('Check-In'),
+                    );
+                  },
                 ),
               ],
             ),
