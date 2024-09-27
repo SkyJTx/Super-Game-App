@@ -63,31 +63,40 @@ class MainPageState extends State<MainPage> {
         ),
       ),
       appBar: AppBar(
-        title: ListTile(
-          title: Text(
-            'SGA',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          subtitle: Text(
-            widget.state.fullPath.toString(),
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+        titleSpacing: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Builder(
+              builder: (context) {
+                if (context.canPop()) {
+                  return IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      context.pop();
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'SGA',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  widget.state.fullPath.toString(),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+          ],
         ),
-        actions: [
-          Builder(
-            builder: (context) {
-              if (context.canPop()) {
-                return IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    context.pop();
-                  },
-                );
-              }
-              return const SizedBox();
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: widget.child,
