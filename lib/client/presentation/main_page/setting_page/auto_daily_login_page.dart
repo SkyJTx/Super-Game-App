@@ -28,9 +28,18 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Auto Daily Login',
-                    style: theme.textTheme.titleLarge,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Auto Daily Login',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                      Switch(
+                        value: state.isGlobalAutoDailyLogin,
+                        onChanged: bloc.setGlobalAutoDailyLogin,
+                      ),
+                    ],
                   ),
                   const Divider(),
                   CustomListTile(
