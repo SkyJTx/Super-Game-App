@@ -49,6 +49,7 @@ dependencies:
   worker_manager: ^7.1.1
   windows_notification: ^1.3.0
   workmanager: ^0.5.2
+  flutter_launcher_icons: ^0.14.1
 
 dev_dependencies:
   flutter_test:
