@@ -65,7 +65,6 @@ class HoYoverseRepository {
     );
 
     if (res.statusCode == HttpStatus.ok) {
-      log('${game.dailyLoginActIdValue} ${res.body}');
       switch (game) {
         case HoYoverseGame.honkaiImpact3rd:
           final body = HonkaiImpact3rdClaimResponse.fromJson(res.body);
@@ -172,7 +171,6 @@ class HoYoverseRepository {
     );
 
     if (res.statusCode == HttpStatus.ok) {
-      log('${event.dailyLoginActIdValue} ${res.body}');
       switch (event) {
         case HoYoverseGame.honkaiImpact3rd:
           final body = HonkaiImpact3rdCheckResponse.fromJson(res.body);
@@ -242,11 +240,13 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${check.retcode}',
+              isSign: false,
             );
           } else if (check.data!.isSign) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Already Signed In',
+              isSign: true,
             );
           }
 
@@ -255,11 +255,13 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${claim.retcode}',
+              isSign: false,
             );
           }
           return DailyLoginInternalResponse(
             success: true,
             message: 'Success on Daily Checkin',
+            isSign: true,
           );
         case HoYoverseGame.genshinImpact:
           final check = await checkDailyReward(game) as GenshinImpactCheckResponse;
@@ -267,11 +269,13 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${check.retcode}',
+              isSign: false,
             );
           } else if (check.data!.isSign) {
             return DailyLoginInternalResponse(
               success: false,
-              message: check.message,
+              message: 'Already Signed In',
+              isSign: true,
             );
           }
 
@@ -280,16 +284,19 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${claim.retcode}',
+              isSign: false,
             );
           } else if (claim.data!.gtResult.isRisk) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Captcha is Required',
+              isSign: false,
             );
           }
           return DailyLoginInternalResponse(
             success: true,
             message: check.message,
+            isSign: true,
           );
         case HoYoverseGame.tearsOfThemis:
           final check = await checkDailyReward(game) as TearsOfThemisCheckResponse;
@@ -297,11 +304,13 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${check.retcode}',
+              isSign: false,
             );
           } else if (check.data!.isSign) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Already Signed In',
+              isSign: true,
             );
           }
 
@@ -310,17 +319,20 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${claim.retcode}',
+              isSign: false,
             );
           } else if (claim.data!.isRisk) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Captcha is Required',
+              isSign: false,
             );
           }
 
           return DailyLoginInternalResponse(
             success: true,
             message: 'Success on Daily Checkin',
+            isSign: true,
           );
         case HoYoverseGame.honkaiStarRail:
           final check = await checkDailyReward(game) as HonkaiStarRailCheckResponse;
@@ -328,11 +340,13 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${check.retcode}',
+              isSign: false,
             );
           } else if (check.data!.isSign) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Already Signed In',
+              isSign: true,
             );
           }
 
@@ -341,17 +355,20 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${claim.retcode}',
+              isSign: false,
             );
           } else if (claim.data!.isRisk) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Captcha is Required',
+              isSign: false,
             );
           }
 
           return DailyLoginInternalResponse(
             success: true,
             message: 'Success on Daily Checkin',
+            isSign: true,
           );
         case HoYoverseGame.zenlessZoneZero:
           final check = await checkDailyReward(game) as ZenlessZoneZeroCheckResponse;
@@ -359,11 +376,13 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${check.retcode}',
+              isSign: false,
             );
           } else if (check.data!.isSign) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Already Signed In',
+              isSign: true,
             );
           }
 
@@ -372,17 +391,20 @@ class HoYoverseRepository {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Error: ${claim.retcode}',
+              isSign: false,
             );
           } else if (claim.data!.isRisk) {
             return DailyLoginInternalResponse(
               success: false,
               message: 'Captcha is Required',
+              isSign: false,
             );
           }
 
           return DailyLoginInternalResponse(
             success: true,
             message: 'Success on Daily Checkin',
+            isSign: true,
           );
         default:
           throw ResponseException(
@@ -394,6 +416,7 @@ class HoYoverseRepository {
       return DailyLoginInternalResponse(
         success: false,
         message: e.toString(),
+        isSign: false,
       );
     }
   }
@@ -445,6 +468,4 @@ class HoYoverseRepository {
 
     return dailyLogin;
   }
-
-  
 }

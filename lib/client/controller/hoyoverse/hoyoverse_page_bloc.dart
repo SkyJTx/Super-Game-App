@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sga/client/repository/global_repo.dart';
 import 'package:sga/server/constant/hoyoverse/details.dart';
 import 'package:sga/server/data_model/hoyoverse/daily_login/check/check_response.dart';
+import 'package:sga/server/data_model/hoyoverse/daily_login/daily_login_internal_response.dart';
 import 'package:sga/server/repository/hoyoverse_repository.dart';
 
 part 'hoyoverse_page_state.dart';
@@ -91,37 +92,59 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
     ]);
   }
 
-  Future<void> Function() checkin(HoYoverseGame game) {
+  Future<DailyLoginInternalResponse?> Function() checkin(
+    HoYoverseGame game, {
+    bool showSnackBar = true,
+  }) {
     return () async {
       try {
         final response = await hoyoverseRepository.fullDailyLogin(game);
-        if (!response.success) {
+        if (showSnackBar) {
+          if (!response.success) {
+            globalRepository.showErrorSnackBar(
+              globalRepository.navigatorKey.currentContext!,
+              message: '${game.name}: ${response.message}',
+            );
+          } else {
+            globalRepository.showSuccessSnackBar(
+              globalRepository.navigatorKey.currentContext!,
+              message: '${game.name}: ${response.message}',
+            );
+          }
+        }
+        setCheckinState(game, !response.isSign);
+        return response;
+      } catch (e) {
+        if (showSnackBar) {
           globalRepository.showErrorSnackBar(
             globalRepository.navigatorKey.currentContext!,
-            message: response.message,
+            message: '${game.name}: $e',
           );
         }
-        setCheckinState(game, !response.success);
-        globalRepository.showSuccessSnackBar(
-          globalRepository.navigatorKey.currentContext!,
-          message: '${game.name} ${response.message}',
-        );
-      } catch (e) {
-        globalRepository.showErrorSnackBar(
-          globalRepository.navigatorKey.currentContext!,
-          message: 'Failed to check-in for ${game.name}',
-        );
+        return null;
       }
     };
   }
 
   Future<void> checkinAll() async {
-    await Future.wait([
-      checkin(HoYoverseGame.honkaiImpact3rd),
-      checkin(HoYoverseGame.tearsOfThemis),
-      checkin(HoYoverseGame.genshinImpact),
-      checkin(HoYoverseGame.honkaiStarRail),
-      checkin(HoYoverseGame.zenlessZoneZero),
+    final response = await Future.wait([
+      if (state.isHI3CanCheckin) checkin(HoYoverseGame.honkaiImpact3rd, showSnackBar: false),
+      if (state.isToTCanCheckin) checkin(HoYoverseGame.tearsOfThemis, showSnackBar: false),
+      if (state.isGICanCheckin) checkin(HoYoverseGame.genshinImpact, showSnackBar: false),
+      if (state.isHSRCanCheckin) checkin(HoYoverseGame.honkaiStarRail, showSnackBar: false),
+      if (state.isZZZCanCheckin) checkin(HoYoverseGame.zenlessZoneZero, showSnackBar: false),
     ].map((e) => e()));
+    final successCount = response.where((e) => e?.success ?? false).length;
+    if (successCount == 0) {
+      globalRepository.showWarningSnackBar(
+        globalRepository.navigatorKey.currentContext!,
+        message: 'Failed to check in all games',
+      );
+    } else {
+      globalRepository.showSuccessSnackBar(
+        globalRepository.navigatorKey.currentContext!,
+        message: 'Checked in $successCount games',
+      );
+    }
   }
 }
