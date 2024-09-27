@@ -39,16 +39,16 @@ class HoyoversePresentationState extends State<HoyoversePage> {
                   constraints: const BoxConstraints(maxWidth: 150),
                   child: BlocSelector<HoyoversePageBloc, HoyoversePageState, bool>(
                     selector: (state) {
-                      return state.isHI3CanCheckin &&
-                          state.isToTCanCheckin &&
-                          state.isGICanCheckin &&
-                          state.isHSRCanCheckin &&
+                      return state.isHI3CanCheckin ||
+                          state.isToTCanCheckin ||
+                          state.isGICanCheckin ||
+                          state.isHSRCanCheckin ||
                           state.isZZZCanCheckin;
                     },
                     builder: (context, state) {
                       return ElevatedButton(
                         onPressed:
-                            !state ? BlocProvider.of<HoyoversePageBloc>(context).checkinAll : null,
+                            state ? BlocProvider.of<HoyoversePageBloc>(context).checkinAll : null,
                         child: const Text('Check-in All'),
                       );
                     },
@@ -72,7 +72,8 @@ class HoyoversePresentationState extends State<HoyoversePage> {
                           'assets/images/hoyoverse/honkai_impact_3rd/card.jpg',
                         ),
                         title: 'Honkai Impact 3rd',
-                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context).checkin(HoYoverseGame.honkaiImpact3rd),
+                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context)
+                            .checkin(HoYoverseGame.honkaiImpact3rd),
                       ),
                       const SizedBox(height: 8),
                       HoyoverseGameCard(
@@ -81,7 +82,8 @@ class HoyoversePresentationState extends State<HoyoversePage> {
                           'assets/images/hoyoverse/tears_of_themis/card.jpg',
                         ),
                         title: 'Tears of Themis',
-                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context).checkin(HoYoverseGame.tearsOfThemis),
+                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context)
+                            .checkin(HoYoverseGame.tearsOfThemis),
                       ),
                       const SizedBox(height: 8),
                       HoyoverseGameCard(
@@ -90,7 +92,8 @@ class HoyoversePresentationState extends State<HoyoversePage> {
                           'assets/images/hoyoverse/genshin_impact/card.jpg',
                         ),
                         title: 'Genshin Impact',
-                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context).checkin(HoYoverseGame.genshinImpact),
+                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context)
+                            .checkin(HoYoverseGame.genshinImpact),
                       ),
                       const SizedBox(height: 8),
                       HoyoverseGameCard(
@@ -99,7 +102,8 @@ class HoyoversePresentationState extends State<HoyoversePage> {
                           'assets/images/hoyoverse/honkai_star_rail/card.png',
                         ),
                         title: 'Honkai Star Rail',
-                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context).checkin(HoYoverseGame.honkaiStarRail),
+                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context)
+                            .checkin(HoYoverseGame.honkaiStarRail),
                       ),
                       const SizedBox(height: 8),
                       HoyoverseGameCard(
@@ -108,7 +112,8 @@ class HoyoversePresentationState extends State<HoyoversePage> {
                           'assets/images/hoyoverse/zenless_zone_zero/card.jpg',
                         ),
                         title: 'Zenless Zone Zero',
-                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context).checkin(HoYoverseGame.zenlessZoneZero),
+                        onCheckIn: BlocProvider.of<HoyoversePageBloc>(context)
+                            .checkin(HoYoverseGame.zenlessZoneZero),
                       ),
                     ],
                   );

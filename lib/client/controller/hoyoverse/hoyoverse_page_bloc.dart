@@ -45,7 +45,7 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
     await Future.wait([
       hoyoverseRepository.checkDailyReward(HoYoverseGame.honkaiImpact3rd).then((value) {
         final isSign = (value as HonkaiImpact3rdCheckResponse).data?.isSign ?? true;
-        emit(state.copyWith(isHI3CanCheckin: isSign));
+        emit(state.copyWith(isHI3CanCheckin: !isSign));
       }).onError((error, stackTrace) {
         globalRepository.showErrorSnackBar(
           globalRepository.navigatorKey.currentContext!,
@@ -54,7 +54,7 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
       }),
       hoyoverseRepository.checkDailyReward(HoYoverseGame.tearsOfThemis).then((value) {
         final isSign = (value as TearsOfThemisCheckResponse).data?.isSign ?? true;
-        emit(state.copyWith(isToTCanCheckin: isSign));
+        emit(state.copyWith(isToTCanCheckin: !isSign));
       }).onError((error, stackTrace) {
         globalRepository.showErrorSnackBar(
           globalRepository.navigatorKey.currentContext!,
@@ -63,7 +63,7 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
       }),
       hoyoverseRepository.checkDailyReward(HoYoverseGame.genshinImpact).then((value) {
         final isSign = (value as GenshinImpactCheckResponse).data?.isSign ?? true;
-        emit(state.copyWith(isGICanCheckin: isSign));
+        emit(state.copyWith(isGICanCheckin: !isSign));
       }).onError((error, stackTrace) {
         globalRepository.showErrorSnackBar(
           globalRepository.navigatorKey.currentContext!,
@@ -72,7 +72,7 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
       }),
       hoyoverseRepository.checkDailyReward(HoYoverseGame.honkaiStarRail).then((value) {
         final isSign = (value as HonkaiStarRailCheckResponse).data?.isSign ?? true;
-        emit(state.copyWith(isHSRCanCheckin: isSign));
+        emit(state.copyWith(isHSRCanCheckin: !isSign));
       }).onError((error, stackTrace) {
         globalRepository.showErrorSnackBar(
           globalRepository.navigatorKey.currentContext!,
@@ -81,7 +81,7 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
       }),
       hoyoverseRepository.checkDailyReward(HoYoverseGame.zenlessZoneZero).then((value) {
         final isSign = (value as ZenlessZoneZeroCheckResponse).data?.isSign ?? true;
-        emit(state.copyWith(isZZZCanCheckin: isSign));
+        emit(state.copyWith(isZZZCanCheckin: !isSign));
       }).onError((error, stackTrace) {
         globalRepository.showErrorSnackBar(
           globalRepository.navigatorKey.currentContext!,
@@ -102,6 +102,10 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
           );
         }
         setCheckinState(game, !response.success);
+        globalRepository.showSuccessSnackBar(
+          globalRepository.navigatorKey.currentContext!,
+          message: '${game.name} ${response.message}',
+        );
       } catch (e) {
         globalRepository.showErrorSnackBar(
           globalRepository.navigatorKey.currentContext!,
@@ -113,11 +117,11 @@ class HoyoversePageBloc extends Cubit<HoyoversePageState> {
 
   Future<void> checkinAll() async {
     await Future.wait([
-      checkin(HoYoverseGame.honkaiImpact3rd)(),
-      checkin(HoYoverseGame.tearsOfThemis)(),
-      checkin(HoYoverseGame.genshinImpact)(),
-      checkin(HoYoverseGame.honkaiStarRail)(),
-      checkin(HoYoverseGame.zenlessZoneZero)(),
-    ]);
+      checkin(HoYoverseGame.honkaiImpact3rd),
+      checkin(HoYoverseGame.tearsOfThemis),
+      checkin(HoYoverseGame.genshinImpact),
+      checkin(HoYoverseGame.honkaiStarRail),
+      checkin(HoYoverseGame.zenlessZoneZero),
+    ].map((e) => e()));
   }
 }
