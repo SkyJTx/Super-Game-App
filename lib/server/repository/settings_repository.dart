@@ -11,6 +11,7 @@ enum SettingsRepository {
   honkaiStarRailDailyCheckin('honkai_star_rail_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
   zenlessZoneZeroDailyCheckin('zenless_zone_zero_auto_daily_checkin', 'false', bool, options: ['true', 'false']),
   theme('theme', 'system', String, options: ['system', 'light', 'dark']),
+  checkinTime('checkin_time', '', String),
   ;
 
   const SettingsRepository(

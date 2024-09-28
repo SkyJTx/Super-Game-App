@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sga/server/data_model/setting.dart';
+import 'package:sga/server/repository/hoyoverse_repository.dart';
 import 'package:sga/server/repository/settings_repository.dart';
 import 'package:uuid/uuid.dart';
+import 'package:workmanager/workmanager.dart';
 
 Future<void> init() async {
   final dir = await getApplicationDocumentsDirectory();
@@ -22,9 +26,30 @@ Future<void> init() async {
 
   // await initLocalNotification();
 
+  if (Platform.isAndroid || Platform.isIOS) {
+    Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: kDebugMode,
+    );
+  }
+
   final getit = GetIt.instance;
 
   getit.registerSingleton<Isar>(isar);
+}
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    try {
+      if (task == HoYoverseRepository().taskName) {
+        await HoYoverseRepository().autoDailyLogin();
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
 }
 
 Future<void> initLocalNotification() async {

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,9 +10,12 @@ import 'package:sga/server/data_model/hoyoverse/daily_login/check/check_response
 import 'package:sga/server/data_model/hoyoverse/daily_login/claim/claim_response.dart';
 import 'package:sga/server/data_model/hoyoverse/daily_login/daily_login_internal_response.dart';
 import 'package:sga/server/repository/settings_repository.dart';
+import 'package:workmanager/workmanager.dart';
 
 class HoYoverseRepository {
   final _api = Api(client: HoYoverseRepository._client);
+  final taskName = 'auto_daily_login';
+  final workTag = 'AutoDailyLogin';
 
   static final Client _client = Client();
 
@@ -450,22 +452,56 @@ class HoYoverseRepository {
 
     await Future.wait([
       if (isHonkaiImpact3rd)
-        fullDailyLogin(HoYoverseGame.honkaiImpact3rd)
+        Future.delayed(Duration.zero)
+            .then((value) => fullDailyLogin(HoYoverseGame.honkaiImpact3rd))
             .then((value) => dailyLogin[HoYoverseGame.honkaiImpact3rd] = value),
       if (isGenshinImpact)
-        fullDailyLogin(HoYoverseGame.genshinImpact)
+        Future.delayed(const Duration(seconds: 1))
+            .then((value) => fullDailyLogin(HoYoverseGame.genshinImpact))
             .then((value) => dailyLogin[HoYoverseGame.genshinImpact] = value),
       if (isTearsOfThemis)
-        fullDailyLogin(HoYoverseGame.tearsOfThemis)
+        Future.delayed(const Duration(seconds: 2))
+            .then((value) => fullDailyLogin(HoYoverseGame.tearsOfThemis))
             .then((value) => dailyLogin[HoYoverseGame.tearsOfThemis] = value),
       if (isHonkaiStarRail)
-        fullDailyLogin(HoYoverseGame.honkaiStarRail)
+        Future.delayed(const Duration(seconds: 3))
+            .then((value) => fullDailyLogin(HoYoverseGame.honkaiStarRail))
             .then((value) => dailyLogin[HoYoverseGame.honkaiStarRail] = value),
       if (isZenlessZoneZero)
-        fullDailyLogin(HoYoverseGame.zenlessZoneZero)
+        Future.delayed(const Duration(seconds: 4))
+            .then((value) => fullDailyLogin(HoYoverseGame.zenlessZoneZero))
             .then((value) => dailyLogin[HoYoverseGame.zenlessZoneZero] = value),
     ]);
 
     return dailyLogin;
+  }
+
+  Future<void> setAutoCheckinTask(TimeOfDay? time) async {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return;
+    }
+
+    if (time == null) {
+      await Workmanager().cancelByTag(workTag);
+      return;
+    } else {
+      await Workmanager().cancelByTag(workTag);
+      final currentTimeofDay = TimeOfDay.now();
+      await Workmanager().registerPeriodicTask(
+        '1',
+        taskName,
+        tag: workTag,
+        initialDelay: Duration(
+          hours: (time.hour - currentTimeofDay.hour) % 24,
+          minutes: (time.minute - currentTimeofDay.minute) % 60,
+        ),
+        frequency: const Duration(hours: 24),
+        constraints: Constraints(
+          networkType: NetworkType.connected,
+          requiresCharging: false,
+        ),
+        backoffPolicyDelay: const Duration(minutes: 1),
+      );
+    }
   }
 }
