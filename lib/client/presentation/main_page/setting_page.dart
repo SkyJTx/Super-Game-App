@@ -97,8 +97,8 @@ class SettingPageState extends State<SettingPage> {
                 },
                 child: const CustomListTile(
                   leading: Icon(Icons.auto_awesome),
-                  title: 'Auto Daily Login',
-                  subtitle: 'Auto daily login for your games.',
+                  title: 'Auto Daily Check-in',
+                  subtitle: 'Auto daily check-in for your games.',
                   trailing: Icon(Icons.chevron_right),
                 ),
               ),
