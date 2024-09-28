@@ -12,6 +12,7 @@ class AutoDailyLoginState {
   final bool enableGIAutoDailyLogin;
   final bool enableHSRAutoDailyLogin;
   final bool enableZZZAutoDailyLogin;
+  final TimeOfDay? checkTime;
 
   AutoDailyLoginState({
     required this.isGlobalAutoDailyLogin,
@@ -25,6 +26,7 @@ class AutoDailyLoginState {
     required this.enableGIAutoDailyLogin,
     required this.enableHSRAutoDailyLogin,
     required this.enableZZZAutoDailyLogin,
+    this.checkTime,
   });
 
   AutoDailyLoginState copyWith({
@@ -39,6 +41,7 @@ class AutoDailyLoginState {
     bool? enableGIAutoDailyLogin,
     bool? enableHSRAutoDailyLogin,
     bool? enableZZZAutoDailyLogin,
+    TimeOfDay? checkTime,
   }) {
     return AutoDailyLoginState(
       isGlobalAutoDailyLogin: isGlobalAutoDailyLogin ?? this.isGlobalAutoDailyLogin,
@@ -52,6 +55,7 @@ class AutoDailyLoginState {
       enableGIAutoDailyLogin: enableGIAutoDailyLogin ?? this.enableGIAutoDailyLogin,
       enableHSRAutoDailyLogin: enableHSRAutoDailyLogin ?? this.enableHSRAutoDailyLogin,
       enableZZZAutoDailyLogin: enableZZZAutoDailyLogin ?? this.enableZZZAutoDailyLogin,
+      checkTime: checkTime ?? this.checkTime,
     );
   }
 
@@ -70,7 +74,8 @@ class AutoDailyLoginState {
         other.enableToTAutoDailyLogin == enableToTAutoDailyLogin &&
         other.enableGIAutoDailyLogin == enableGIAutoDailyLogin &&
         other.enableHSRAutoDailyLogin == enableHSRAutoDailyLogin &&
-        other.enableZZZAutoDailyLogin == enableZZZAutoDailyLogin;
+        other.enableZZZAutoDailyLogin == enableZZZAutoDailyLogin &&
+        other.checkTime == checkTime;
   }
 
   @override
@@ -87,6 +92,7 @@ class AutoDailyLoginState {
       enableGIAutoDailyLogin,
       enableHSRAutoDailyLogin,
       enableZZZAutoDailyLogin,
+      checkTime,
     ]);
   }
 }

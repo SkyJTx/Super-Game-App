@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sga/client/component/custom_list_tile.dart';
@@ -32,7 +34,7 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Auto Daily Login',
+                        'Auto Daily Check-in',
                         style: theme.textTheme.titleLarge,
                       ),
                       Switch(
@@ -41,6 +43,25 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                       ),
                     ],
                   ),
+                  if (Platform.isAndroid || Platform.isIOS) ...[
+                    const Divider(),
+                    CustomListTile(
+                      leading: const Icon(Icons.timer_rounded),
+                      title: 'Set Timer for Auto Daily Check-in',
+                      subtitle:
+                          'Set the time for auto daily check-in${state.checkTime != null ? ' at ${state.checkTime!.format(context)}' : ''}',
+                      trailing: IconButton(
+                        icon: const Icon(Icons.timer),
+                        onPressed: () async {
+                          final timer =
+                              await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                          if (timer != null) {
+                            bloc.setCheckinTime(timer);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                   const Divider(),
                   CustomListTile(
                     leading: const Image(
@@ -48,7 +69,7 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                       width: 36,
                     ),
                     title: 'Honkai Impact 3rd',
-                    subtitle: 'Auto daily login for Honkai Impact 3rd',
+                    subtitle: 'Auto daily check-in for Honkai Impact 3rd',
                     trailing: Switch(
                       value: state.isHI3AutoDailyLogin,
                       onChanged: bloc.setAutoDailyLogin(AutoDailyLoginGame.honkaiImpact3rd),
@@ -60,7 +81,7 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                       width: 36,
                     ),
                     title: 'Tears of Themis',
-                    subtitle: 'Auto daily login for Tears of Themis',
+                    subtitle: 'Auto daily check-in for Tears of Themis',
                     trailing: Switch(
                       value: state.isToTAutoDailyLogin,
                       onChanged: bloc.setAutoDailyLogin(AutoDailyLoginGame.tearsOfThemis),
@@ -72,7 +93,7 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                       width: 36,
                     ),
                     title: 'Genshin Impact',
-                    subtitle: 'Auto daily login for Genshin Impact',
+                    subtitle: 'Auto daily check-in for Genshin Impact',
                     trailing: Switch(
                       value: state.isGIAutoDailyLogin,
                       onChanged: bloc.setAutoDailyLogin(AutoDailyLoginGame.genshinImpact),
@@ -84,7 +105,7 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                       width: 36,
                     ),
                     title: 'Honkai Star Rail',
-                    subtitle: 'Auto daily login for Honkai Star Rail',
+                    subtitle: 'Auto daily check-in for Honkai Star Rail',
                     trailing: Switch(
                       value: state.isHSRAutoDailyLogin,
                       onChanged: bloc.setAutoDailyLogin(AutoDailyLoginGame.honkaiStarRail),
@@ -96,7 +117,7 @@ class AutoDailyLoginSettingPageState extends State<AutoDailyLoginSettingPage> {
                       width: 36,
                     ),
                     title: 'Zenless Zone Zero',
-                    subtitle: 'Auto daily login for Zenless Zone Zero',
+                    subtitle: 'Auto daily check-in for Zenless Zone Zero',
                     trailing: Switch(
                       value: state.isZZZAutoDailyLogin,
                       onChanged: bloc.setAutoDailyLogin(AutoDailyLoginGame.zenlessZoneZero),

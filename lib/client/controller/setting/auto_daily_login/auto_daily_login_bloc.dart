@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sga/server/repository/hoyoverse_repository.dart';
 import 'package:sga/server/repository/settings_repository.dart';
 
 part 'auto_daily_login_state.dart';
@@ -34,6 +36,14 @@ class AutoDailyLoginBloc extends Cubit<AutoDailyLoginState> {
   Future<void> init() async {
     final prevState = state.copyWith();
     try {
+      SettingsRepository.checkinTime.get().then((value) {
+        final parsedDateTime = DateTime.tryParse(value);
+        if (parsedDateTime != null) {
+          emit(state.copyWith(
+            checkTime: TimeOfDay.fromDateTime(parsedDateTime),
+          ));
+        }
+      });
       List<bool?> getResult = await Future.wait([
         SettingsRepository.honkaiImpact3rdDailyCheckin.get(),
         SettingsRepository.tearsOfThemisDailyCheckin.get(),
@@ -196,5 +206,16 @@ class AutoDailyLoginBloc extends Cubit<AutoDailyLoginState> {
         emit(prevState);
       }
     };
+  }
+
+  Future<void> setCheckinTime(TimeOfDay? time) async {
+    HoYoverseRepository().setAutoCheckinTask(time);
+    if (time != null) {
+      SettingsRepository.checkinTime.set(
+        DateTime(0, 0, 0, time.hour, time.minute).toIso8601String(),
+      );
+    }
+
+    emit(state.copyWith(checkTime: time));
   }
 }
